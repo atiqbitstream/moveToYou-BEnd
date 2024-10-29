@@ -13,10 +13,10 @@ export class Customer {
     lastName: string
 
     @Column()
-    phoneNumber:number;
+    phoneNumber:string;
 
     @Column()
-    Address:string;
+    address:string;
 
     @Column()
     sector:string;
