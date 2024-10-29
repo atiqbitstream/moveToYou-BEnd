@@ -1,37 +1,43 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, HttpException, HttpStatus} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, HttpException, HttpStatus, UseGuards} from '@nestjs/common';
 import { CustomerService } from './customer.service';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
 import { HttpService } from '@nestjs/axios';
 import { lastValueFrom, Observable } from 'rxjs';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
 @Controller('customer')
 export class CustomerController {
   constructor(private readonly customerService: CustomerService, private httpService:HttpService) {}
 
+
+  @UseGuards(JwtAuthGuard)
   @Get('verification')
   async userVerification() {
-    console.log("This is user");
 
-    try {
-      const response = await lastValueFrom(
-        this.httpService.post(
-          'http://localhost:3000/auth/verifyToken', 
-          {}, // empty body for POST request
-          {
-            headers: {
-              Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NDEsInJvbGUiOiJVU0VSIiwiZW1haWwiOiJhdGlxQGdtYWlsLmNvbSIsImlhdCI6MTczMDE4MTgwMX0.Uw885YzvDRjpX_hwZ0aht3DD8Gp9P-W-96PNDwpvBZk' // replace with your token
-            }
-          }
-        )
-      );
+
+    console.log("i am in customerveriffication controller")
+    // console.log("This is user");
+
+    // try {
+    //   const response = await lastValueFrom(
+    //     this.httpService.post(
+    //       'http://localhost:3000/auth/verifyToken', 
+    //       {}, // empty body for POST request
+    //       {
+    //         headers: {
+    //           Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NDEsInJvbGUiOiJVU0VSIiwiZW1haWwiOiJhdGlxQGdtYWlsLmNvbSIsImlhdCI6MTczMDE4MTgwMX0.Uw885YzvDRjpX_hwZ0aht3DD8Gp9P-W-96PNDwpvBZk' // replace with your token
+    //         }
+    //       }
+    //     )
+    //   );
       
-      console.log('Verification response:', response.data);
-      return response.data; // Return the response data to the caller
-    } catch (error) {
-      console.error('Error:', error.message);
-      throw new HttpException('Verification failed', HttpStatus.UNAUTHORIZED);
-    }
+    //   console.log('Verification response:', response.data);
+    //   return response.data; // Return the response data to the caller
+    // } catch (error) {
+    //   console.error('Error:', error.message);
+    //   throw new HttpException('Verification failed', HttpStatus.UNAUTHORIZED);
+    // }
   }
 
 
