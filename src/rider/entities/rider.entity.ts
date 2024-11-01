@@ -1,40 +1,47 @@
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { AssignCustomer } from "./assignCustomer.entity";
-import { DailyDelivery } from "./dailyDelivery.entity";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { AssignCustomer } from './assignCustomer.entity';
+import { DailyDelivery } from './dailyDelivery.entity';
 
 @Entity()
 export class Rider {
-    @PrimaryGeneratedColumn()
-    id: number
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column()
-    firstName: string
+  @Column()
+  firstName: string;
 
-    @Column()
-    lastName: string
+  @Column()
+  lastName: string;
 
-    @Column()
-    phoneNumber:string;
+  @Column()
+  phoneNumber: string;
 
-    @Column()
-    address:string;
+  @Column()
+  address: string;
 
-    @Column()
-    sector:string;
+  @Column()
+  sector: string;
 
-    @Column()
-    street:string;
+  @Column()
+  street: string;
 
-    @Column()
-    cnicNumber:string;
+  @Column()
+  cnicNumber: string;
 
-    @OneToMany(()=>AssignCustomer,(assignCustomer)=>assignCustomer.rider)
-    assignments:AssignCustomer[];
+  @OneToMany(() => AssignCustomer, (assignCustomer) => assignCustomer.rider)
+  assignments: AssignCustomer[];
 
-    @OneToMany(()=>DailyDelivery,(dailyDelivery)=>dailyDelivery.rider)
-     dailyDeliveries:DailyDelivery[];
+  @OneToMany(() => DailyDelivery, (dailyDelivery) => dailyDelivery.rider)
+  dailyDeliveries: DailyDelivery[];
 
-     @CreateDateColumn({ type: 'timestamp' })
+  @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 
   // Automatically updates the timestamp when the entity is updated
