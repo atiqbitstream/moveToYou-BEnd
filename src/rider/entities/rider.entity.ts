@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { AssignCustomer } from "./assignCustomer.entity";
 
 @Entity()
 export class Rider {
@@ -26,4 +27,6 @@ export class Rider {
     @Column()
     cnicNumber:string;
 
+    @OneToMany(()=>AssignCustomer,(assignCustomer)=>assignCustomer.rider)
+    assignments:AssignCustomer[];
 }
