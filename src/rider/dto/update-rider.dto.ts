@@ -10,6 +10,4 @@ export class UpdateRiderDto extends PartialType(CreateRiderDto) {
     sector?: string;
     street?: string;
     cnicNumber?:string;
-    updatedAt:Date;
-    createdAt:Date;
 }
