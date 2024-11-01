@@ -1,5 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { AssignCustomer } from "./assignCustomer.entity";
+import { DailyDelivery } from "./dailyDelivery.entity";
 
 @Entity()
 export class Rider {
@@ -29,4 +30,7 @@ export class Rider {
 
     @OneToMany(()=>AssignCustomer,(assignCustomer)=>assignCustomer.rider)
     assignments:AssignCustomer[];
+
+    @OneToMany(()=>DailyDelivery,(dailyDelivery)=>dailyDelivery.rider)
+     dailyDeliveries:DailyDelivery[];
 }
