@@ -33,4 +33,10 @@ export class Rider {
 
     @OneToMany(()=>DailyDelivery,(dailyDelivery)=>dailyDelivery.rider)
      dailyDeliveries:DailyDelivery[];
+
+     @Column()
+    createdAt:Date;
+
+    @Column()
+    updatedAt:Date;
 }

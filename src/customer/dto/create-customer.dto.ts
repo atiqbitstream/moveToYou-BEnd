@@ -11,5 +11,7 @@ export class CreateCustomerDto {
   organization: string;
   status: boolean;
   contract: string;
+  updatedAt:Date;
+  createdAt:string;
 
 }
