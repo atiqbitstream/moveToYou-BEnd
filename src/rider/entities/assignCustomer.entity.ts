@@ -1,7 +1,8 @@
-import { Column, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 import { Rider } from "./rider.entity";
 import { Customer } from "src/customer/entities/customer.entity";
 
+@Entity()
 export class AssignCustomer
 {
     @PrimaryGeneratedColumn()
