@@ -1,6 +1,6 @@
 import { Column, PrimaryGeneratedColumn } from "typeorm";
 
-export class deliveryItem
+export class DeliveryItem
 {
 
     @PrimaryGeneratedColumn()
