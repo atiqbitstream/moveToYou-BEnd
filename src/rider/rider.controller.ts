@@ -7,8 +7,8 @@ import { UpdateRiderDto } from './dto/update-rider.dto';
 export class RiderController {
   constructor(private readonly riderService: RiderService) {}
 
-  @Post()
-  create(@Body() createRiderDto: CreateRiderDto) {
+  @Post('create')
+  createRider(@Body() createRiderDto: CreateRiderDto) {
     return this.riderService.create(createRiderDto);
   }
 
@@ -17,14 +17,14 @@ export class RiderController {
     return this.riderService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.riderService.findOne(+id);
+  @Get('profile/:id')
+  getRider(@Param('id') id: number) {
+    return this.riderService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateRiderDto: UpdateRiderDto) {
-    return this.riderService.update(+id, updateRiderDto);
+  @Patch('update/:id')
+  updateRider(@Param('id') id: number, @Body() updateRider: UpdateRiderDto) {
+    return this.riderService.update(id, updateRider);
   }
 
   @Delete(':id')
