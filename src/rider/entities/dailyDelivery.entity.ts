@@ -1,6 +1,7 @@
 import { Customer } from './../../customer/entities/customer.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Rider } from './rider.entity';
+import { DeliveryItem } from './deliveryItem.entity';
 
 @Entity()
 export class DailyDelivery
@@ -23,4 +24,7 @@ export class DailyDelivery
 
     @ManyToOne(()=>Rider,(rider)=>rider.dailyDeliveries)
     rider:Rider;
+
+    @OneToMany(()=>DeliveryItem,(deliveryItem)=>deliveryItem.dailyDelivery)
+    DeliveryItems:DeliveryItem[];
 }

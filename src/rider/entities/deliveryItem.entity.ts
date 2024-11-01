@@ -1,4 +1,6 @@
-import { Column, PrimaryGeneratedColumn } from "typeorm";
+
+import { Column, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { DailyDelivery } from "./dailyDelivery.entity";
 
 export class DeliveryItem
 {
@@ -15,8 +17,8 @@ export class DeliveryItem
     @Column()
     price:number;
 
-   
-
+   @ManyToOne(()=>DailyDelivery,(dailyDelivery)=>dailyDelivery.DeliveryItems)
+    dailyDelivery:DailyDelivery;
 
 
 }
