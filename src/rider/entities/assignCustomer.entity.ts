@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Rider } from "./rider.entity";
 import { Customer } from "src/customer/entities/customer.entity";
 
@@ -14,9 +14,10 @@ export class AssignCustomer
     @ManyToOne(()=>Customer,(customer)=>customer.assignments)
     customer:Customer;
 
-    @Column()
-    createdAt:Date;
+    @CreateDateColumn({ type: 'timestamp' })
+  createdAt: Date;
 
-    @Column()
-    updatedAt:Date;
+  // Automatically updates the timestamp when the entity is updated
+  @UpdateDateColumn({ type: 'timestamp' })
+  updatedAt: Date;
 }
