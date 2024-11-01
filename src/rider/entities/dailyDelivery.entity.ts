@@ -1,7 +1,8 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Customer } from './../../customer/entities/customer.entity';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
-export class dailyDelivery
+export class DailyDelivery
 {
     @PrimaryGeneratedColumn()
     id:number;
@@ -14,4 +15,7 @@ export class dailyDelivery
 
     @Column()
     cancelledReason:string;
+
+    @ManyToOne(()=>Customer,(customer)=>customer.dailyDeliveries)
+     customer:Customer;
 }
