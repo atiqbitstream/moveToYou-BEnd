@@ -1,8 +1,9 @@
 
-import { Column, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { DailyDelivery } from "./dailyDelivery.entity";
 import { Product } from "src/product/entities/product.entity";
 
+@Entity()
 export class DeliveryItem
 {
 
