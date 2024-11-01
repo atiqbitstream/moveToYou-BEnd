@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { AssignCustomer } from "./assignCustomer.entity";
 import { DailyDelivery } from "./dailyDelivery.entity";
 
@@ -34,9 +34,10 @@ export class Rider {
     @OneToMany(()=>DailyDelivery,(dailyDelivery)=>dailyDelivery.rider)
      dailyDeliveries:DailyDelivery[];
 
-     @Column()
-    createdAt:Date;
+     @CreateDateColumn({ type: 'timestamp' })
+  createdAt: Date;
 
-    @Column()
-    updatedAt:Date;
+  // Automatically updates the timestamp when the entity is updated
+  @UpdateDateColumn({ type: 'timestamp' })
+  updatedAt: Date;
 }
