@@ -25,4 +25,10 @@ export class DeliveryItem
     @ManyToOne(()=>Product,(product)=>product.deliveryItems)
     product:Product;
 
+    @Column()
+    createdAt:Date;
+
+    @Column()
+    updatedAt:Date;
+
 }

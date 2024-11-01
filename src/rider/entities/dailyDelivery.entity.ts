@@ -27,4 +27,10 @@ export class DailyDelivery
 
     @OneToMany(()=>DeliveryItem,(deliveryItem)=>deliveryItem.dailyDelivery)
     DeliveryItems:DeliveryItem[];
+
+    @Column()
+    createdAt:Date;
+
+    @Column()
+    updatedAt:Date;
 }
