@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { DailyDelivery } from "src/rider/entities/dailyDelivery.entity";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Customer {
@@ -38,4 +39,9 @@ export class Customer {
 
     @Column()
     contract:string;
+
+    @OneToMany(()=>DailyDelivery, (dailyDelivery)=>dailyDelivery.customer)
+      dailyDeliveries:DailyDelivery[];
+
+    
 }
