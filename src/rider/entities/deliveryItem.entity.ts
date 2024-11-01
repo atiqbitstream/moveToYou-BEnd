@@ -1,5 +1,5 @@
 
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { DailyDelivery } from "./dailyDelivery.entity";
 import { Product } from "src/product/entities/product.entity";
 
@@ -25,10 +25,11 @@ export class DeliveryItem
     @ManyToOne(()=>Product,(product)=>product.deliveryItems)
     product:Product;
 
-    @Column()
-    createdAt:Date;
+    @CreateDateColumn({ type: 'timestamp' })
+  createdAt: Date;
 
-    @Column()
-    updatedAt:Date;
+  // Automatically updates the timestamp when the entity is updated
+  @UpdateDateColumn({ type: 'timestamp' })
+  updatedAt: Date;
 
 }
