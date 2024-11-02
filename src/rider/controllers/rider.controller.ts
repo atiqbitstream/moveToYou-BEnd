@@ -5,6 +5,8 @@ import { CreateDailyDeliveryDto } from '../dto/delivery/create-delivery.dto';
 import { RiderService } from '../services/rider.service';
 import { UpdateDeliveryDto } from '../dto/delivery/update-delivery.dto';
 import { get } from 'http';
+import { CreateDeliveryItemDto } from '../dto/delivery/delivery-item.dto';
+import { UpdateDeliveryItemDto } from '../dto/delivery/update-delivery-item.dto';
 
 @Controller('rider')
 export class RiderController {
@@ -56,5 +58,23 @@ export class RiderController {
     return this.riderService.updateDailyDelivery(id,updateDailyDelivery)
   }
 
+  //crud for deliveryItem entity
+@Post('createDeliveryItem')
+  createDeliveryItem(@Body() newDeliveryItem:CreateDeliveryItemDto)
+  {
+     return this.riderService.createDeliveryItem(newDeliveryItem);
+  }
+
+  @Get('getDeliveryItem')
+  getDeliveryItem(@Param('id') id:number)
+  {
+     return this.riderService.getDelieveryItem(id);
+  }
+
+  @Patch('updateDeliveryItem')
+  updateDeliveryItem(@Param('id') id:number, @Body() updateDeliveryItem:UpdateDeliveryItemDto)
+  {
+    return this.riderService.updateDeliveryItem(id,updateDeliveryItem)
+  }
 
 }

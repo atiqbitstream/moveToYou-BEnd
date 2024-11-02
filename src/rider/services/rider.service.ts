@@ -7,6 +7,8 @@ import { Repository } from 'typeorm';
 import { CreateDailyDeliveryDto } from '../dto/delivery/create-delivery.dto';
 import { DailyDelivery } from '../entities/dailyDelivery.entity';
 import { UpdateDeliveryDto } from '../dto/delivery/update-delivery.dto';
+import { CreateDeliveryItemDto } from '../dto/delivery/delivery-item.dto';
+import { DeliveryItem } from '../entities/deliveryItem.entity';
 
 @Injectable()
 export class RiderService {
@@ -14,7 +16,9 @@ export class RiderService {
   constructor( @InjectRepository(Rider)
   private ridersRepository: Repository<Rider>,
   @InjectRepository(DailyDelivery)
-  private dailyDeliveryRepository: Repository<DailyDelivery>
+  private dailyDeliveryRepository: Repository<DailyDelivery>,
+  @InjectRepository(DeliveryItem)
+  private deliveryItemRepository: Repository<DeliveryItem>
 ){}
 
 
@@ -51,6 +55,9 @@ export class RiderService {
   }
 
 
+
+  //crud for dailyDleivery entity
+
   createDelivery(newDelivery:CreateDailyDeliveryDto)
   {
     const deliveryData={
@@ -79,5 +86,37 @@ export class RiderService {
     return this.dailyDeliveryRepository.findOneBy({
       id
     })
+  }
+
+  //crud for delivery item entity
+  createDeliveryItem(newDelivery:CreateDeliveryItemDto)
+  {
+    const deliveryItemData = {
+      ...newDelivery,
+      data:new Date(newDelivery.date)
+    }
+
+    const DeliveryItem = this.deliveryItemRepository.create(deliveryItemData);
+
+    const  savedDeliveryItem = this.deliveryItemRepository.save(DeliveryItem);
+
+    return savedDeliveryItem;
+  }
+
+  getDelieveryItem(id:number)
+  {
+    this.deliveryItemRepository.findOneBy({
+      id
+    })
+  }
+
+  async updateDeliveryItem(id:number,updateDeliveryitem:UpdateDeliveryDto)
+  {
+    await this.deliveryItemRepository.update(id,updateDeliveryitem);
+
+    return this.deliveryItemRepository.findOneBy({
+      id
+    })
+
   }
 }
