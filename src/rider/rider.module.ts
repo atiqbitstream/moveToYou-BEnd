@@ -5,9 +5,10 @@ import { Rider } from './entities/rider.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DailyDelivery } from './entities/dailyDelivery.entity';
 import { DeliveryItem } from './entities/deliveryItem.entity';
+import { Product } from 'src/product/entities/product.entity';
 
 @Module({
-  imports:[TypeOrmModule.forFeature([Rider, DailyDelivery,DeliveryItem]),
+  imports:[TypeOrmModule.forFeature([Rider, DailyDelivery,DeliveryItem,Product]),
 
 ],
   controllers: [RiderController, ],

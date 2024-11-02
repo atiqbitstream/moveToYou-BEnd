@@ -11,4 +11,6 @@ export class CreateDeliveryItemDto
     price:number;
 
     productId:number;
+
+    dailyDeliveryId:number;
 }
