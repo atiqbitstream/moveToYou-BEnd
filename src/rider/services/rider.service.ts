@@ -55,8 +55,14 @@ export class RiderService {
     })
   }
 
-  removeRider(id: number) {
-    return `This action removes a #${id} rider`;
+  async removeRider(id: number) {
+    const rider = await this.ridersRepository.findOneBy({
+      id
+    })
+
+    rider.isDeleted = !rider.isDeleted;
+
+    return await this.ridersRepository.save(rider);
   }
 
 
@@ -93,6 +99,16 @@ export class RiderService {
     })
   }
 
+  async removeDelivery(id: number) {
+    const dailyDelivery = await this.dailyDeliveryRepository.findOneBy({
+      id
+    })
+
+    dailyDelivery.isDeleted = !dailyDelivery.isDeleted;
+
+    return await this.dailyDeliveryRepository.save(dailyDelivery);
+  }
+
   //crud for delivery item entity
   createDeliveryItem(newDelivery:CreateDeliveryItemDto)
   {
@@ -125,6 +141,16 @@ export class RiderService {
 
   }
 
+  async removeDeliveryItem(id: number) {
+    const deliveryItem = await this.deliveryItemRepository.findOneBy({
+      id
+    })
+
+    deliveryItem.isDeleted = !deliveryItem.isDeleted;
+
+    return await this.deliveryItemRepository.save(deliveryItem);
+  }
+
   //crud for product repository
 
   createProduct(newProduct:CreateProductDto)
@@ -150,5 +176,15 @@ export class RiderService {
     return this.productRepository.findOneBy({
       id
     })
+  }
+
+  async removeProduct(id: number) {
+    const product = await this.productRepository.findOneBy({
+      id
+    })
+
+    product.isDeleted = !product.isDeleted;
+
+    return await this.productRepository.save(product);
   }
 }

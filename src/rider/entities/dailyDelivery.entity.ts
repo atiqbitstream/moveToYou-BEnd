@@ -40,4 +40,7 @@ export class DailyDelivery
   // Automatically updates the timestamp when the entity is updated
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
+
+  @Column({default:false})
+  isDeleted:boolean;
 }

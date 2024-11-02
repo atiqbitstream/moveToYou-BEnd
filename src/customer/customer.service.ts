@@ -42,8 +42,14 @@ export class CustomerService {
     
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} customer`;
+  async remove(id: number) {
+    const customer = await this.customersRepository.findOneBy({
+      id
+    })
+
+    customer.isDeleted=true;
+
+    await this.customersRepository.save(customer);
   }
 }
 
