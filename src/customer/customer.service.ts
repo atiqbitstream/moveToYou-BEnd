@@ -47,7 +47,7 @@ export class CustomerService {
       id
     })
 
-    customer.isDeleted=true;
+    customer.isDeleted = !customer.isDeleted;
 
     await this.customersRepository.save(customer);
   }
