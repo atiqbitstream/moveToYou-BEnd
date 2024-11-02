@@ -57,4 +57,7 @@ export class Customer {
 
   @Column({ type: 'timestamp', nullable: true })
   updatedAt: Date;
+
+  @Column({default:false})
+  isDeleted:boolean;
 }

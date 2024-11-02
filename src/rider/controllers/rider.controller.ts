@@ -34,9 +34,9 @@ export class RiderController {
     return this.riderService.updateRider(id, updateRider);
   }
 
-  @Delete(':id')
-  removeRider(@Param('id') id: string) {
-    return this.riderService.removeRider(+id);
+  @Delete('delete/:id')
+  removeRider(@Param('id') id: number) {
+    return this.riderService.removeRider(id);
   }
 
 
@@ -60,6 +60,11 @@ export class RiderController {
     return this.riderService.updateDailyDelivery(id,updateDailyDelivery)
   }
 
+  @Delete('delete/dailyDelivery/:id')
+  removeDailyDelivery(@Param('id') id: number) {
+    return this.riderService.removeDelivery(id);
+  }
+
   //crud for deliveryItem entity
 @Post('createDeliveryItem')
   createDeliveryItem(@Body() newDeliveryItem:CreateDeliveryItemDto)
@@ -79,6 +84,11 @@ export class RiderController {
     return this.riderService.updateDeliveryItem(id,updateDeliveryItem)
   }
 
+  @Delete('delete/deliveryItem/:id')
+  removeDeliveryItem(@Param('id') id: number) {
+    return this.riderService.removeDeliveryItem(id);
+  }
+
   //crud for product entity
  @Post('createProduct')
   createProduct(@Body() newProduct:CreateProductDto)
@@ -96,5 +106,10 @@ export class RiderController {
   updateProduct(@Param('id') id:number, @Body() updateProduct:UpdateProductDto)
   {
     return this.riderService.updateProduct(id,updateProduct);
+  }
+
+  @Delete('delete/product/:id')
+  removeProduct(@Param('id') id: number) {
+    return this.riderService.removeProduct(id);
   }
 }

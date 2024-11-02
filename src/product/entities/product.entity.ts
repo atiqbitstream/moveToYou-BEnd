@@ -13,4 +13,7 @@ export class Product {
   @OneToMany(()=>DeliveryItem,(deliveryItem)=>deliveryItem.product)
    deliveryItems:DeliveryItem[];
 
+   @Column({default:false})
+  isDeleted:boolean;
+
 }
