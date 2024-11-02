@@ -9,7 +9,7 @@ export class DailyDelivery
     @PrimaryGeneratedColumn()
     id:number;
 
-    @Column()
+    @Column({ type: 'timestamp', nullable: false })
     date:Date
 
     @Column()
@@ -17,6 +17,12 @@ export class DailyDelivery
 
     @Column()
     cancelledReason:string;
+
+    @Column({ nullable: true })
+    customerId:number;
+
+    @Column({ nullable: true })
+    riderId:number;
 
     @ManyToOne(()=>Customer,(customer)=>customer.dailyDeliveries)
      customer:Customer;
