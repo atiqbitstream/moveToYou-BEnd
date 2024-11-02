@@ -26,6 +26,9 @@ export class DeliveryItem {
   @Column()
   productId: number;
 
+  @Column({ nullable: true })
+  dailyDeliveryId:number;
+
   @ManyToOne(
     () => DailyDelivery,
     (dailyDelivery) => dailyDelivery.DeliveryItems,
