@@ -9,6 +9,9 @@ import { DailyDelivery } from '../entities/dailyDelivery.entity';
 import { UpdateDeliveryDto } from '../dto/delivery/update-delivery.dto';
 import { CreateDeliveryItemDto } from '../dto/delivery/delivery-item.dto';
 import { DeliveryItem } from '../entities/deliveryItem.entity';
+import { Product } from 'src/product/entities/product.entity';
+import { CreateProductDto } from 'src/product/dto/create-product.dto';
+import { UpdateProductDto } from 'src/product/dto/update-product.dto';
 
 @Injectable()
 export class RiderService {
@@ -18,7 +21,9 @@ export class RiderService {
   @InjectRepository(DailyDelivery)
   private dailyDeliveryRepository: Repository<DailyDelivery>,
   @InjectRepository(DeliveryItem)
-  private deliveryItemRepository: Repository<DeliveryItem>
+  private deliveryItemRepository: Repository<DeliveryItem>,
+  @InjectRepository(Product)
+  private productRepository: Repository<Product>
 ){}
 
 
@@ -105,7 +110,7 @@ export class RiderService {
 
   getDelieveryItem(id:number)
   {
-    this.deliveryItemRepository.findOneBy({
+    return this.deliveryItemRepository.findOneBy({
       id
     })
   }
@@ -118,5 +123,32 @@ export class RiderService {
       id
     })
 
+  }
+
+  //crud for product repository
+
+  createProduct(newProduct:CreateProductDto)
+  {
+      const product = this.productRepository.create(newProduct);
+
+      const savedProduct = this.productRepository.save(product);
+
+      return savedProduct;
+  }
+
+  getProduct(id:number)
+  {
+    return this.productRepository.findOneBy({
+      id
+    })
+  }
+
+  async updateProduct(id:number, updateProduct:UpdateProductDto)
+  {
+    await this.productRepository.update(id,updateProduct);
+
+    return this.productRepository.findOneBy({
+      id
+    })
   }
 }
