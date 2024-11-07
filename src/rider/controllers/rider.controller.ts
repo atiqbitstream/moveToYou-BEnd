@@ -1,14 +1,15 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { CreateRiderDto } from '../dto/rider/create-rider.dto';
-import { UpdateRiderDto } from '../dto/rider/update-rider.dto';
-import { CreateDailyDeliveryDto } from '../dto/delivery/create-delivery.dto';
+import { CreateRiderDto } from '../dto/riderDTOs/create-rider.dto';
+import { UpdateRiderDto } from '../dto/riderDTOs/update-rider.dto';
+import { CreateDailyDeliveryDto } from '../dto/deliveryDTOs/create-delivery.dto';
 import { RiderService } from '../services/rider.service';
-import { UpdateDeliveryDto } from '../dto/delivery/update-delivery.dto';
+import { UpdateDeliveryDto } from '../dto/deliveryDTOs/update-delivery.dto';
 import { get } from 'http';
-import { CreateDeliveryItemDto } from '../dto/delivery/delivery-item.dto';
-import { UpdateDeliveryItemDto } from '../dto/delivery/update-delivery-item.dto';
+import { CreateDeliveryItemDto } from '../dto/deliveryDTOs/delivery-item.dto';
+import { UpdateDeliveryItemDto } from '../dto/deliveryDTOs/update-delivery-item.dto';
 import { CreateProductDto } from 'src/product/dto/create-product.dto';
 import { UpdateProductDto } from 'src/product/dto/update-product.dto';
+import { CreateDeliveryWithItemDto } from '../dto/deliveryDTOs/delivery-with-item.dto';
 
 @Controller('rider')
 export class RiderController {
@@ -41,6 +42,11 @@ export class RiderController {
 
 
   //crud for dailyDelivery
+  @Post('createDeliveryWithItem')
+  createDeliveryWithItem(@Body() newDeliveryWithItem:CreateDeliveryWithItemDto)
+  {
+     return this.riderService.createDeliveryWithItem(newDeliveryWithItem);
+  }
 @Post('createDailyDelivery')
   createDailyDelivery(@Body() newDelivery:CreateDailyDeliveryDto)
   {

@@ -31,7 +31,7 @@ export class DeliveryItem {
 
   @ManyToOne(
     () => DailyDelivery,
-    (dailyDelivery) => dailyDelivery.DeliveryItems,
+    (dailyDelivery) => dailyDelivery.deliveryItems,
   )
   dailyDelivery: DailyDelivery;
 
