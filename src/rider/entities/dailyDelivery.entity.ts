@@ -12,10 +12,10 @@ export class DailyDelivery
     @Column({ type: 'timestamp', nullable: false })
     date:Date
 
-    @Column()
+    @Column({default:false})
     cancelled:boolean;
 
-    @Column()
+    @Column({default:"no reason "})
     cancelledReason:string;
 
     @Column({ nullable: true })
@@ -31,8 +31,8 @@ export class DailyDelivery
     @ManyToOne(()=>Rider,(rider)=>rider.dailyDeliveries)
     rider:Rider;
 
-    @OneToMany(()=>DeliveryItem,(deliveryItem)=>deliveryItem.dailyDelivery)
-    DeliveryItems:DeliveryItem[];
+    @OneToMany(()=>DeliveryItem,(deliveryItem)=>deliveryItem.dailyDelivery,{cascade:true})
+    deliveryItems:DeliveryItem[];
 
     @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
