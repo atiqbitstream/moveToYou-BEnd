@@ -1,17 +1,18 @@
 import { Injectable } from '@nestjs/common';
-import { CreateRiderDto } from '../dto/rider/create-rider.dto';
-import { UpdateRiderDto } from '../dto/rider/update-rider.dto';
+import { CreateRiderDto } from '../dto/riderDTOs/create-rider.dto';
+import { UpdateRiderDto } from '../dto/riderDTOs/update-rider.dto';
 import { Rider } from '../entities/rider.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateDailyDeliveryDto } from '../dto/delivery/create-delivery.dto';
+import { CreateDailyDeliveryDto } from '../dto/deliveryDTOs/create-delivery.dto';
 import { DailyDelivery } from '../entities/dailyDelivery.entity';
-import { UpdateDeliveryDto } from '../dto/delivery/update-delivery.dto';
-import { CreateDeliveryItemDto } from '../dto/delivery/delivery-item.dto';
+import { UpdateDeliveryDto } from '../dto/deliveryDTOs/update-delivery.dto';
+import { CreateDeliveryItemDto } from '../dto/deliveryDTOs/delivery-item.dto';
 import { DeliveryItem } from '../entities/deliveryItem.entity';
 import { Product } from 'src/product/entities/product.entity';
 import { CreateProductDto } from 'src/product/dto/create-product.dto';
 import { UpdateProductDto } from 'src/product/dto/update-product.dto';
+import { CreateDeliveryWithItemDto } from '../dto/deliveryDTOs/delivery-with-item.dto';
 
 @Injectable()
 export class RiderService {
@@ -67,7 +68,21 @@ export class RiderService {
 
 
 
-  //crud for dailyDleivery entity
+  //crud for dailyDelivery entity
+
+  createDeliveryWithItem(newDeliveryWithItem:CreateDeliveryWithItemDto)
+  {
+    const deliveryWithItemData = {
+      ...newDeliveryWithItem,
+      date:new Date(newDeliveryWithItem.date)
+    }
+
+    const deliveryWithItem = this.dailyDeliveryRepository.create(deliveryWithItemData);
+
+    const savedDeliveryWithItem = this.dailyDeliveryRepository.save(deliveryWithItem);
+
+    return savedDeliveryWithItem;
+  }
 
   createDelivery(newDelivery:CreateDailyDeliveryDto)
   {
@@ -110,6 +125,8 @@ export class RiderService {
   }
 
   //crud for delivery item entity
+
+
   createDeliveryItem(newDelivery:CreateDeliveryItemDto)
   {
     const deliveryItemData = {
