@@ -8,10 +8,10 @@ export class AssignCustomer
     @PrimaryGeneratedColumn()
     id:number;
 
-    @ManyToOne(()=>Rider,(rider)=>rider.assignments)
+    @ManyToOne(()=>Rider,(rider)=>rider.assignments,{onDelete: 'CASCADE',eager:true})
     rider:Rider;
 
-    @ManyToOne(()=>Customer,(customer)=>customer.assignments)
+    @ManyToOne(()=>Customer,(customer)=>customer.assignments, {onDelete:'CASCADE',eager:true})
     customer:Customer;
 
     @CreateDateColumn({ type: 'timestamp' })
