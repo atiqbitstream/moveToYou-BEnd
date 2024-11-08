@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateRiderDto } from '../dto/riderDTOs/create-rider.dto';
 import { UpdateRiderDto } from '../dto/riderDTOs/update-rider.dto';
 import { Rider } from '../entities/rider.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { CreateDailyDeliveryDto } from '../dto/deliveryDTOs/create-delivery.dto';
 import { DailyDelivery } from '../entities/dailyDelivery.entity';
 import { UpdateDeliveryDto } from '../dto/deliveryDTOs/update-delivery.dto';
@@ -13,6 +13,8 @@ import { Product } from 'src/product/entities/product.entity';
 import { CreateProductDto } from 'src/product/dto/create-product.dto';
 import { UpdateProductDto } from 'src/product/dto/update-product.dto';
 import { CreateDeliveryWithItemDto } from '../dto/deliveryDTOs/delivery-with-item.dto';
+import { Customer } from 'src/customer/entities/customer.entity';
+import { AssignCustomer } from '../entities/assignCustomer.entity';
 
 @Injectable()
 export class RiderService {
@@ -24,7 +26,11 @@ export class RiderService {
   @InjectRepository(DeliveryItem)
   private deliveryItemRepository: Repository<DeliveryItem>,
   @InjectRepository(Product)
-  private productRepository: Repository<Product>
+  private productRepository: Repository<Product>,
+  @InjectRepository(Customer)
+  private customerRepository : Repository<Customer>,
+  @InjectRepository(AssignCustomer)
+  private assignCustomerRepo : Repository<AssignCustomer>
 ){}
 
 
@@ -207,8 +213,35 @@ export class RiderService {
 
   //crud for assignCustomer To Riders
 
-  assignCustomersToRider()
+  async assignCustomersToRider(riderId:number, customerIds:number[])
   {
-    
+      const [rider, customers] = await Promise.all([
+        this.ridersRepository.findOne({
+          where : {id : riderId, isDeleted : false},
+          relations: ['assignments']
+        }),
+        this.customerRepository.find({
+          where: { id: In(customerIds), isDeleted: false }
+      })
+      ])
+
+      if(!rider)
+      {
+        throw new NotFoundException(`Rider with ID ${riderId} not found `)
+      }
+
+      if(customers.length !== customerIds.length)
+      {
+         throw new BadRequestException('Some customers were not found');
+      }
+
+      const assignments = customers.map(customer=>{
+        const assignment = new AssignCustomer();
+        assignment.rider=rider;
+        assignment.customer=customer;
+        return assignment;
+      });
+
+      return await this.assignCustomerRepo.save(assignments);
   }
 }
