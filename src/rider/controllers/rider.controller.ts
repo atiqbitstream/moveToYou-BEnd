@@ -1,3 +1,4 @@
+import { AssignCustomer } from './../entities/assignCustomer.entity';
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { CreateRiderDto } from '../dto/riderDTOs/create-rider.dto';
 import { UpdateRiderDto } from '../dto/riderDTOs/update-rider.dto';
@@ -42,11 +43,17 @@ export class RiderController {
 
 
   //crud for dailyDelivery
+
+  //create dailyDelivery with deliveryItems array
+
   @Post('createDeliveryWithItem')
   createDeliveryWithItem(@Body() newDeliveryWithItem:CreateDeliveryWithItemDto)
   {
      return this.riderService.createDeliveryWithItem(newDeliveryWithItem);
   }
+
+  //create dailyDelivery without deliveryItems array
+
 @Post('createDailyDelivery')
   createDailyDelivery(@Body() newDelivery:CreateDailyDeliveryDto)
   {
@@ -117,5 +124,13 @@ export class RiderController {
   @Delete('delete/product/:id')
   removeProduct(@Param('id') id: number) {
     return this.riderService.removeProduct(id);
+  }
+
+
+  //crud for assignCustomer
+
+  assignCustomersToRider()
+  {
+     
   }
 }

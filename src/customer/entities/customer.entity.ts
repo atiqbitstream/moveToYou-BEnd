@@ -49,7 +49,7 @@ export class Customer {
   @OneToMany(() => DailyDelivery, (dailyDelivery) => dailyDelivery.customer)
   dailyDeliveries: DailyDelivery[];
 
-  @ManyToMany(() => AssignCustomer, (assignCustomer) => assignCustomer.customer)
+  @OneToMany(() => AssignCustomer, (assignCustomer) => assignCustomer.customer, {cascade:true})
   assignments: AssignCustomer[];
 
   @Column({ type: 'timestamp', nullable: true })

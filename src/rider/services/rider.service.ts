@@ -204,4 +204,11 @@ export class RiderService {
 
     return await this.productRepository.save(product);
   }
+
+  //crud for assignCustomer To Riders
+
+  assignCustomersToRider()
+  {
+    
+  }
 }
