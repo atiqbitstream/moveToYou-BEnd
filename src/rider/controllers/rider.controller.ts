@@ -1,5 +1,5 @@
 import { AssignCustomer } from './../entities/assignCustomer.entity';
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
 import { CreateRiderDto } from '../dto/riderDTOs/create-rider.dto';
 import { UpdateRiderDto } from '../dto/riderDTOs/update-rider.dto';
 import { CreateDailyDeliveryDto } from '../dto/deliveryDTOs/create-delivery.dto';
@@ -128,9 +128,14 @@ export class RiderController {
 
 
   //crud for assignCustomer
-
-  assignCustomersToRider()
+@Post('assignCustomers/:riderId')
+  async assignCustomers(@Param('riderId', ParseIntPipe) riderId:number, @Body('customerIds') customerIds : number[])
   {
-     
+    const assignedCustomers = await this.riderService.assignCustomersToRider(riderId,customerIds);
+
+    return  {
+      message : 'customers assigned successfully to Riders',
+      data : assignedCustomers
+    }
   }
 }
