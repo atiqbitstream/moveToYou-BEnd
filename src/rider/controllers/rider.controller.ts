@@ -138,4 +138,31 @@ export class RiderController {
       data : assignedCustomers
     }
   }
+
+  @Get('getAssignedCustomers/:riderId')
+  async getAssignedCustomers(@Param('riderId', ParseIntPipe) riderId:number)
+  {
+     const assignedCustomers = await this.riderService.getAssignedCustomers(riderId);
+
+     return assignedCustomers;
+  }
+
+  @Patch('updateAssignedCustomers/:assignCustomerId')
+  async updateAssignedCustomers(@Param('assignCustomerId',ParseIntPipe) assignCustomerId:number,
+  @Body() updateData:{
+    newRiderId: number;
+    newCustomerIds : number[];
+  }
+)
+  {
+     const updatedAssignedCustomers=await this.riderService.updateAssignedCustomers(assignCustomerId,updateData.newRiderId,updateData.newCustomerIds);
+
+     return updatedAssignedCustomers;
+  }
+
+  @Delete('delete/assignedCustomer/:id')
+  removeAssignedCustomers(@Param('id') id:number)
+  {
+    return this.riderService.removeAssignedCustomers(id);
+  }
 }

@@ -244,4 +244,72 @@ export class RiderService {
 
       return await this.assignCustomerRepo.save(assignments);
   }
+
+  async getAssignedCustomers(riderId:number)
+  {
+     const assignedCustomers = await this.assignCustomerRepo.createQueryBuilder('assignedCustomer')
+     .leftJoinAndSelect('assignedCustomer.customer','customer')
+     .where('assignedCustomer.rider.id=:riderId',{riderId})
+     .andWhere('assignedCustomer.isDeleted=:isDeleted',{isDeleted:false})
+     .select([
+      'assignedCustomer.id',
+      'customer.id',
+      'customer.firstName',
+      'customer.lastName',
+      'customer.phoneNumber',
+      'customer.address',
+      'customer.sector'
+     ])
+     .getMany();
+
+     return assignedCustomers.map(assignedCustomer=>assignedCustomer.customer)
+  }
+
+  async updateAssignedCustomers(assignCustomerId:number,newRiderId:number, newCustomerIds:number[])
+  {
+     const assignedCustomers = await this.assignCustomerRepo.findOne({
+      where : {id:assignCustomerId, isDeleted:false},
+      relations:['customer']
+     })
+
+     if(!assignedCustomers)
+     {
+      throw new NotFoundException('Assingment with ID ${assignmentId} not found');
+     }
+
+     const newRider = await this.ridersRepository.findOne({
+      where:{id:newRiderId, isDeleted:false}
+     });
+
+     if(!newRider)
+     {
+      throw new NotFoundException(`Rider with ID ${newRiderId} not found`)
+     }
+
+     const newCustomers =await this.customerRepository.find({
+        where : {id:In(newCustomerIds), isDeleted:false}
+     })
+
+     if(newCustomers.length!==newCustomerIds.length)
+     {
+      throw new BadRequestException('Some customers were not found')
+     }
+
+    assignedCustomers.rider=newRider;
+    assignedCustomers.customer=newCustomers[0];
+
+    return await this.assignCustomerRepo.save(assignedCustomers);
+
+  }
+
+  async removeAssignedCustomers(id:number)
+  {
+      const assignedCustomers = await this.assignCustomerRepo.findOneBy({
+        id
+      })
+
+      assignedCustomers.isDeleted=!assignedCustomers.isDeleted;
+
+      return await this.assignCustomerRepo.save(assignedCustomers);
+  }
 }
