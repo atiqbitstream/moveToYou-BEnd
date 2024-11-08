@@ -35,7 +35,7 @@ export class Rider {
   @Column()
   cnicNumber: string;
 
-  @OneToMany(() => AssignCustomer, (assignCustomer) => assignCustomer.rider)
+  @OneToMany(() => AssignCustomer, (assignCustomer) => assignCustomer.rider,{cascade:true})
   assignments: AssignCustomer[];
 
   @OneToMany(() => DailyDelivery, (dailyDelivery) => dailyDelivery.rider)
