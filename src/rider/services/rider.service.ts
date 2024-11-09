@@ -18,6 +18,9 @@ import { AssignCustomer } from '../entities/assignCustomer.entity';
 import { CreateAreaDto } from '../dto/areaDTOs/createArea.dto';
 import { Area } from '../entities/area.entity';
 import { UpdateAreaDto } from '../dto/areaDTOs/update-Area.dto';
+import { Zone } from '../entities/zone.entity';
+import { CreateZoneDto } from '../dto/areaDTOs/createZone.dto';
+import { UpdateZoneDto } from '../dto/areaDTOs/update-zone.dto';
 
 @Injectable()
 export class RiderService {
@@ -35,7 +38,9 @@ export class RiderService {
   @InjectRepository(AssignCustomer)
   private assignCustomerRepo : Repository<AssignCustomer>,
   @InjectRepository(Area)
-  private areaRepository: Repository<Area>
+  private areaRepository: Repository<Area>,
+  @InjectRepository(Zone)
+  private zoneRepository: Repository<Zone>
 ){}
 
 
@@ -350,4 +355,37 @@ export class RiderService {
 
     return await this.areaRepository.save(area);
   }
+
+  //crud for zone entity
+  createZone(newZone:CreateZoneDto)
+  {
+    const zone = this.zoneRepository.create(newZone);
+
+    const savedZone = this.zoneRepository.save(zone);
+
+    return savedZone;
+  }
+
+  getZone(id:number)
+  {
+   return this.zoneRepository.findOneBy({id});
+  }
+
+  async updateZone(id:number, updateZone:UpdateZoneDto)
+  {
+     await this.zoneRepository.update(id,updateZone);
+
+     return this.zoneRepository.findOneBy({id});
+  }
+
+  async deleteZone(id:number)
+  {
+     const zone =await  this.zoneRepository.findOneBy({id});
+
+     zone.isDeleted=!zone.isDeleted;
+
+     return this.zoneRepository.save(zone);
+
+  }
+  
 }
