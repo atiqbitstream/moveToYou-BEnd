@@ -1,9 +1,11 @@
+import { Area } from 'src/rider/entities/area.entity';
 import { AssignCustomer } from 'src/rider/entities/assignCustomer.entity';
 import { DailyDelivery } from 'src/rider/entities/dailyDelivery.entity';
 import {
   Column,
   Entity,
   ManyToMany,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -51,6 +53,9 @@ export class Customer {
 
   @OneToMany(() => AssignCustomer, (assignCustomer) => assignCustomer.customer, {cascade:true})
   assignments: AssignCustomer[];
+
+  @ManyToOne(()=>Area,(area)=>area.customers)
+  area:Area;
 
   @Column({ type: 'timestamp', nullable: true })
   createdAt: Date;
