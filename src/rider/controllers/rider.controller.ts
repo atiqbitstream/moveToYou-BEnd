@@ -20,6 +20,8 @@ import { UpdateDeliveryItemDto } from '../dto/deliveryDTOs/update-delivery-item.
 import { CreateProductDto } from 'src/product/dto/create-product.dto';
 import { UpdateProductDto } from 'src/product/dto/update-product.dto';
 import { CreateDeliveryWithItemDto } from '../dto/deliveryDTOs/delivery-with-item.dto';
+import { CreateAreaDto } from '../dto/areaDTOs/createArea.dto';
+import { UpdateAreaDto } from '../dto/areaDTOs/update-Area.dto';
 
 @Controller('rider')
 export class RiderController {
@@ -185,8 +187,28 @@ export class RiderController {
   }
 
   //Crud for Area Entity
-  createArea()
+  @Post('createArea')
+  createArea(@Body() newArea:CreateAreaDto)
   {
-    
+     return this.riderService.createArea(newArea);
+  }
+
+  @Get('getArea/:id')
+  getArea(@Param('id') id:number)
+  {
+    return this.riderService.getArea(id);
+  }
+
+  @Patch('updateArea/:id')
+  updateArea(@Param('id') id:number,@Body() updateArea:UpdateAreaDto)
+  {
+    return this.riderService.updateArea(id,updateArea)
+  }
+
+
+  @Delete('deleteArea/:id')
+  deleteArea(id:number)
+  {
+    return this.riderService.deleteArea(id);
   }
 }

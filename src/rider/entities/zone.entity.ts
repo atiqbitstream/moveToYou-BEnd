@@ -20,4 +20,7 @@ export class Zone
    @OneToMany(()=>Area,(area)=>area.zone)
    areas:Area[];
 
+   @Column({default:false})
+   isDeleted:boolean;
+
 }

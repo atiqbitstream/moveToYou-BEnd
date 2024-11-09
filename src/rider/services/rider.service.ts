@@ -15,6 +15,9 @@ import { UpdateProductDto } from 'src/product/dto/update-product.dto';
 import { CreateDeliveryWithItemDto } from '../dto/deliveryDTOs/delivery-with-item.dto';
 import { Customer } from 'src/customer/entities/customer.entity';
 import { AssignCustomer } from '../entities/assignCustomer.entity';
+import { CreateAreaDto } from '../dto/areaDTOs/createArea.dto';
+import { Area } from '../entities/area.entity';
+import { UpdateAreaDto } from '../dto/areaDTOs/update-Area.dto';
 
 @Injectable()
 export class RiderService {
@@ -30,7 +33,9 @@ export class RiderService {
   @InjectRepository(Customer)
   private customerRepository : Repository<Customer>,
   @InjectRepository(AssignCustomer)
-  private assignCustomerRepo : Repository<AssignCustomer>
+  private assignCustomerRepo : Repository<AssignCustomer>,
+  @InjectRepository(Area)
+  private areaRepository: Repository<Area>
 ){}
 
 
@@ -311,5 +316,38 @@ export class RiderService {
       assignedCustomers.isDeleted=!assignedCustomers.isDeleted;
 
       return await this.assignCustomerRepo.save(assignedCustomers);
+  }
+
+  //crud for Area
+  createArea(newArea:CreateAreaDto)
+  {
+    const area = this.areaRepository.create(newArea);
+
+    const savedArea = this.areaRepository.save(area);
+
+    return savedArea;
+  }
+
+  async getArea(id:number)
+  {
+    return await this.areaRepository.findOneBy({
+      id
+    })
+  }
+
+  async updateArea(id:number, updateArea:UpdateAreaDto)
+  {
+    await this.areaRepository.update(id,updateArea);
+
+    return this.areaRepository.findOneBy({id});
+  }
+
+  async deleteArea(id:number)
+  {
+    const area= await this.areaRepository.findOneBy({id});
+
+    area.isDeleted=!area.isDeleted;
+
+    return await this.areaRepository.save(area);
   }
 }

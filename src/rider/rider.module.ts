@@ -8,9 +8,10 @@ import { DailyDelivery } from './entities/dailyDelivery.entity';
 import { DeliveryItem } from './entities/deliveryItem.entity';
 import { Product } from 'src/product/entities/product.entity';
 import { AssignCustomer } from './entities/assignCustomer.entity';
+import { Area } from './entities/area.entity';
 
 @Module({
-  imports:[TypeOrmModule.forFeature([Rider, DailyDelivery,DeliveryItem,Product,Customer,AssignCustomer]),
+  imports:[TypeOrmModule.forFeature([Rider, DailyDelivery,DeliveryItem,Product,Customer,AssignCustomer,Area]),
 
 ],
   controllers: [RiderController, ],
