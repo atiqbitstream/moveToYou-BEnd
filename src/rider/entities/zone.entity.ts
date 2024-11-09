@@ -11,7 +11,7 @@ export class Zone
    @Column()
    name:string;
 
-   @Column({type: 'timestamp'})
+   @Column({type: 'timestamp', nullable:true})
    createdAt:Date;
 
    @Column({type : 'timestamp', default:()=>'CURRENT_TIMESTAMP', onUpdate:'CURRENT_TIMESTAMP'})
@@ -22,5 +22,8 @@ export class Zone
 
    @Column({default:false})
    isDeleted:boolean;
+
+   @Column()
+   organizationId:number;
 
 }
