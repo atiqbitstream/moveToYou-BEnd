@@ -17,7 +17,7 @@ export class Area
     @Column("simple-json")
     googlePins: { latitude: string; longitude: string }
 
-    @Column({ type: 'timestamp'})
+    @Column({ type: 'timestamp',nullable:true})
     createdAt: Date;
   
     @Column({ type: 'timestamp', default:()=>'CURRENT_TIMESTAMP',onUpdate: 'CURRENT_TIMESTAMP'})
@@ -29,4 +29,7 @@ export class Area
 
     @OneToMany(()=>Customer,(customer)=>customer.area)
      customers:Customer[];
+
+     @Column({default:false})
+     isDeleted:boolean;
 }
