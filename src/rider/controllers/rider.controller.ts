@@ -1,5 +1,14 @@
 import { AssignCustomer } from './../entities/assignCustomer.entity';
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { CreateRiderDto } from '../dto/riderDTOs/create-rider.dto';
 import { UpdateRiderDto } from '../dto/riderDTOs/update-rider.dto';
 import { CreateDailyDeliveryDto } from '../dto/deliveryDTOs/create-delivery.dto';
@@ -41,36 +50,36 @@ export class RiderController {
     return this.riderService.removeRider(id);
   }
 
-
   //crud for dailyDelivery
 
   //create dailyDelivery with deliveryItems array
 
   @Post('createDeliveryWithItem')
-  createDeliveryWithItem(@Body() newDeliveryWithItem:CreateDeliveryWithItemDto)
-  {
-     return this.riderService.createDeliveryWithItem(newDeliveryWithItem);
+  createDeliveryWithItem(
+    @Body() newDeliveryWithItem: CreateDeliveryWithItemDto,
+  ) {
+    return this.riderService.createDeliveryWithItem(newDeliveryWithItem);
   }
 
   //create dailyDelivery without deliveryItems array
 
-@Post('createDailyDelivery')
-  createDailyDelivery(@Body() newDelivery:CreateDailyDeliveryDto)
-  {
+  @Post('createDailyDelivery')
+  createDailyDelivery(@Body() newDelivery: CreateDailyDeliveryDto) {
     console.log('Controller received newDelivery:', newDelivery);
     return this.riderService.createDelivery(newDelivery);
   }
 
   @Get('getDailyDelivery/:id')
-  getDailyDelivery(@Param('id') id:number)
-  {
+  getDailyDelivery(@Param('id') id: number) {
     return this.riderService.getDailyDelivery(id);
   }
 
   @Patch('updateDailyDelivery/:id')
-  updateDailyDelivery(@Param('id') id:number ,@Body() updateDailyDelivery:UpdateDeliveryDto)
-  {
-    return this.riderService.updateDailyDelivery(id,updateDailyDelivery)
+  updateDailyDelivery(
+    @Param('id') id: number,
+    @Body() updateDailyDelivery: UpdateDeliveryDto,
+  ) {
+    return this.riderService.updateDailyDelivery(id, updateDailyDelivery);
   }
 
   @Delete('delete/dailyDelivery/:id')
@@ -79,22 +88,22 @@ export class RiderController {
   }
 
   //crud for deliveryItem entity
-@Post('createDeliveryItem')
-  createDeliveryItem(@Body() newDeliveryItem:CreateDeliveryItemDto)
-  {
-     return this.riderService.createDeliveryItem(newDeliveryItem);
+  @Post('createDeliveryItem')
+  createDeliveryItem(@Body() newDeliveryItem: CreateDeliveryItemDto) {
+    return this.riderService.createDeliveryItem(newDeliveryItem);
   }
 
   @Get('getDeliveryItem')
-  getDeliveryItem(@Param('id') id:number)
-  {
-     return this.riderService.getDelieveryItem(id);
+  getDeliveryItem(@Param('id') id: number) {
+    return this.riderService.getDelieveryItem(id);
   }
 
   @Patch('updateDeliveryItem/:id')
-  updateDeliveryItem(@Param('id') id:number, @Body() updateDeliveryItem:UpdateDeliveryItemDto)
-  {
-    return this.riderService.updateDeliveryItem(id,updateDeliveryItem)
+  updateDeliveryItem(
+    @Param('id') id: number,
+    @Body() updateDeliveryItem: UpdateDeliveryItemDto,
+  ) {
+    return this.riderService.updateDeliveryItem(id, updateDeliveryItem);
   }
 
   @Delete('delete/deliveryItem/:id')
@@ -103,22 +112,22 @@ export class RiderController {
   }
 
   //crud for product entity
- @Post('createProduct')
-  createProduct(@Body() newProduct:CreateProductDto)
-  {
-     return this.riderService.createProduct(newProduct);
+  @Post('createProduct')
+  createProduct(@Body() newProduct: CreateProductDto) {
+    return this.riderService.createProduct(newProduct);
   }
 
   @Get('getProduct/:id')
-  getProduct(@Param('id') id:number)
-  {
+  getProduct(@Param('id') id: number) {
     return this.riderService.getProduct(id);
   }
 
   @Patch('updateProduct/:id')
-  updateProduct(@Param('id') id:number, @Body() updateProduct:UpdateProductDto)
-  {
-    return this.riderService.updateProduct(id,updateProduct);
+  updateProduct(
+    @Param('id') id: number,
+    @Body() updateProduct: UpdateProductDto,
+  ) {
+    return this.riderService.updateProduct(id, updateProduct);
   }
 
   @Delete('delete/product/:id')
@@ -126,43 +135,58 @@ export class RiderController {
     return this.riderService.removeProduct(id);
   }
 
+  //crud for assignCustomer   (we can assign customers to rider)
+  @Post('assignCustomers/:riderId')
+  async assignCustomers(
+    @Param('riderId', ParseIntPipe) riderId: number,
+    @Body('customerIds') customerIds: number[],
+  ) {
+    const assignedCustomers = await this.riderService.assignCustomersToRider(
+      riderId,
+      customerIds,
+    );
 
-  //crud for assignCustomer
-@Post('assignCustomers/:riderId')
-  async assignCustomers(@Param('riderId', ParseIntPipe) riderId:number, @Body('customerIds') customerIds : number[])
-  {
-    const assignedCustomers = await this.riderService.assignCustomersToRider(riderId,customerIds);
-
-    return  {
-      message : 'customers assigned successfully to Riders',
-      data : assignedCustomers
-    }
+    return {
+      message: 'customers assigned successfully to Riders',
+      data: assignedCustomers,
+    };
   }
 
   @Get('getAssignedCustomers/:riderId')
-  async getAssignedCustomers(@Param('riderId', ParseIntPipe) riderId:number)
-  {
-     const assignedCustomers = await this.riderService.getAssignedCustomers(riderId);
+  async getAssignedCustomers(@Param('riderId', ParseIntPipe) riderId: number) {
+    const assignedCustomers =
+      await this.riderService.getAssignedCustomers(riderId);
 
-     return assignedCustomers;
+    return assignedCustomers;
   }
 
   @Patch('updateAssignedCustomers/:assignCustomerId')
-  async updateAssignedCustomers(@Param('assignCustomerId',ParseIntPipe) assignCustomerId:number,
-  @Body() updateData:{
-    newRiderId: number;
-    newCustomerIds : number[];
-  }
-)
-  {
-     const updatedAssignedCustomers=await this.riderService.updateAssignedCustomers(assignCustomerId,updateData.newRiderId,updateData.newCustomerIds);
+  async updateAssignedCustomers(
+    @Param('assignCustomerId', ParseIntPipe) assignCustomerId: number,
+    @Body()
+    updateData: {
+      newRiderId: number;
+      newCustomerIds: number[];
+    },
+  ) {
+    const updatedAssignedCustomers =
+      await this.riderService.updateAssignedCustomers(
+        assignCustomerId,
+        updateData.newRiderId,
+        updateData.newCustomerIds,
+      );
 
-     return updatedAssignedCustomers;
+    return updatedAssignedCustomers;
   }
 
   @Delete('delete/assignedCustomer/:id')
-  removeAssignedCustomers(@Param('id') id:number)
-  {
+  removeAssignedCustomers(@Param('id') id: number) {
     return this.riderService.removeAssignedCustomers(id);
+  }
+
+  //Crud for Area Entity
+  createArea()
+  {
+    
   }
 }
