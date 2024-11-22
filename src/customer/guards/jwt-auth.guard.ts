@@ -19,28 +19,28 @@ export class JwtAuthGuard implements CanActivate {
     }
     try {
       const httpReq: Request = context.switchToHttp().getRequest();
-
-      console.log("jwt auth guard => http request : ", httpReq.rawHeaders)
+      console.log("jwt auth guard => http request : ", httpReq.rawHeaders);
 
       const token = httpReq.headers?.authorization?.split(' ')[1];
+      console.log("jwt auth guard[mooToyou] => token : ", token);
 
-      console.log("jwt auth guard[mooToyou] => token : ", token)
-      
       if (!token) {
-        throw new UnauthorizedException('token is empty[mooToyuo]');
+        throw new UnauthorizedException('Token is missing.');
       }
-      
 
-      try{
-    const result = await this.tokenService.customerVerification(token);
-    console.log("THis is reuslt = > ",result )
-      }catch(error){
-        console.error('Error trying cusotmerverification')
+      // Verify the token using your service
+      const result = await this.tokenService.customerVerification(token);
+      console.log("This is result => ", result);
+
+      if (!result) {
+        throw new UnauthorizedException('Invalid token.');
       }
-     
+
+      // Allow the request to proceed
+      return true;
 
     } catch (error) {
-      console.log('JwtAuthGuard, canActivate => ', error);
+      console.log('JwtAuthGuard, canActivate => ', error.message);
       throw new UnauthorizedException(error.message);
     }
   }

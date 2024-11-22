@@ -8,6 +8,7 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateRiderDto } from '../dto/riderDTOs/create-rider.dto';
 import { UpdateRiderDto } from '../dto/riderDTOs/update-rider.dto';
@@ -24,11 +25,14 @@ import { CreateAreaDto } from '../dto/areaDTOs/createArea.dto';
 import { UpdateAreaDto } from '../dto/areaDTOs/update-Area.dto';
 import { CreateZoneDto } from '../dto/areaDTOs/createZone.dto';
 import { UpdateZoneDto } from '../dto/areaDTOs/update-zone.dto';
+import { JwtAuthGuard } from 'src/customer/guards/jwt-auth.guard';
 
 @Controller('rider')
 export class RiderController {
   constructor(private readonly riderService: RiderService) {}
 
+
+  @UseGuards(JwtAuthGuard)
   @Post('create')
   createRider(@Body() createRiderDto: CreateRiderDto) {
     return this.riderService.createRider(createRiderDto);
