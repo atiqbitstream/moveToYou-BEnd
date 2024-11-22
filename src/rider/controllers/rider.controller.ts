@@ -26,13 +26,17 @@ import { UpdateAreaDto } from '../dto/areaDTOs/update-Area.dto';
 import { CreateZoneDto } from '../dto/areaDTOs/createZone.dto';
 import { UpdateZoneDto } from '../dto/areaDTOs/update-zone.dto';
 import { JwtAuthGuard } from 'src/customer/guards/jwt-auth.guard';
+import { RolesGuard } from '../guards/roles.guard';
+import { Roles } from '../decorators/roles.decorator';
+import { ERole } from '../enums/roles.enum';
 
 @Controller('rider')
 export class RiderController {
   constructor(private readonly riderService: RiderService) {}
 
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard,RolesGuard)
+  @Roles(ERole.USER)
   @Post('create')
   createRider(@Body() createRiderDto: CreateRiderDto) {
     return this.riderService.createRider(createRiderDto);
