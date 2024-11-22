@@ -23,7 +23,7 @@ export class TokenService{
               )
             );
             
-            console.log('Verification response:', response.data);
+            console.log('The decoded Token user object received from SNB is :', response.data);
             return response.data; // Return the response data to the caller
           } catch (error) {
             console.error('Error:', error.message);

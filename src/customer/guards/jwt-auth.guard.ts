@@ -19,7 +19,6 @@ export class JwtAuthGuard implements CanActivate {
     }
     try {
       const httpReq: Request = context.switchToHttp().getRequest();
-      console.log("jwt auth guard => http request : ", httpReq.rawHeaders);
 
       const token = httpReq.headers?.authorization?.split(' ')[1];
       console.log("jwt auth guard[mooToyou] => token : ", token);
@@ -30,12 +29,14 @@ export class JwtAuthGuard implements CanActivate {
 
       // Verify the token using your service
       const result = await this.tokenService.customerVerification(token);
-      console.log("This is result => ", result);
+      console.log("Here is the decoded User object from SNB => ", result);
 
       if (!result) {
         throw new UnauthorizedException('Invalid token.');
       }
 
+
+     httpReq.user=result;
       // Allow the request to proceed
       return true;
 
