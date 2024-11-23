@@ -54,7 +54,7 @@ export class RiderService {
   }
 
   findAll() {
-    return `This action returns all rider`;
+    return this.ridersRepository.find();
   }
 
   getRider(id: number) {
