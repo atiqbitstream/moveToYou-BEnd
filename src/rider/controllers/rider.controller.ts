@@ -42,7 +42,8 @@ export class RiderController {
     return this.riderService.createRider(createRiderDto);
   }
 
-  @Get()
+  @UseGuards(JwtAuthGuard)
+  @Get('getAllRiders')
   findAllRiders() {
     return this.riderService.findAll();
   }
