@@ -15,25 +15,10 @@ export class Rider {
   id: number;
 
   @Column()
-  firstName: string;
+  userId:number; //Referecne to user in SNB
 
-  @Column()
-  lastName: string;
 
-  @Column()
-  phoneNumber: string;
 
-  @Column()
-  address: string;
-
-  @Column()
-  sector: string;
-
-  @Column()
-  street: string;
-
-  @Column()
-  cnicNumber: string;
 
   @OneToMany(() => AssignCustomer, (assignCustomer) => assignCustomer.rider,{cascade:true})
   assignments: AssignCustomer[];
