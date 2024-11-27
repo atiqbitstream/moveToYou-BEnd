@@ -8,22 +8,27 @@ import { HttpService } from '@nestjs/axios';
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
   constructor(private reflector: Reflector, private httpService:HttpService, private tokenService:TokenService) {
-    // console.log('AuthService instantiated with TokenService:', tokenService);
+    
     
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
+    console.log('===== MTUB JWT AUTH GUARD START =====');
+
     const isPublic = this.reflector.get<boolean>('isPublic', context.getHandler());
     if (isPublic) {
+      console.log('Public Route : Bypassing Authentication');
       return true; // Allow public access
     }
     try {
-      const httpReq: Request = context.switchToHttp().getRequest();
+      const request: Request = context.switchToHttp().getRequest();
 
-      const token = httpReq.headers?.authorization?.split(' ')[1];
-      console.log("jwt auth guard[mooToyou] => token : ", token);
+      const token = request.headers?.authorization?.split(' ')[1];
+     
+      console.log('Extracted Token : ',token)
 
       if (!token) {
+        console.error('Extracted Token: ',token);
         throw new UnauthorizedException('Token is missing.');
       }
 
@@ -32,17 +37,25 @@ export class JwtAuthGuard implements CanActivate {
       console.log("Here is the decoded User object from SNB => ", result);
 
       if (!result) {
+        console.error('TOKEN VERIFICATION FAILED');
         throw new UnauthorizedException('Invalid token.');
       }
 
 
-     httpReq.user=result;
+     request.user=result;
       // Allow the request to proceed
+      console.log('===== MTUB JWT GUARD SUCCESSS =====')
       return true;
 
     } catch (error) {
-      console.log('JwtAuthGuard, canActivate => ', error.message);
-      throw new UnauthorizedException(error.message);
+        console.error('===== MTUB JWT GUARD ERROR =====');
+        console.error('Guard Error: ',{
+          name : error.name,
+          message: error.message,
+          stack: error.stack
+        });
+
+        throw new UnauthorizedException(error.message);
     }
   }
 }

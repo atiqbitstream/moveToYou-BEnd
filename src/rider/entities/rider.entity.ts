@@ -10,7 +10,7 @@ import { AssignCustomer } from './assignCustomer.entity';
 import { DailyDelivery } from './dailyDelivery.entity';
 
 @Entity()
-export class Rider {
+export class RiderProfile {
   @PrimaryGeneratedColumn()
   id: number;
 

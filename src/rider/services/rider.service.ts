@@ -1,7 +1,7 @@
-import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateRiderDto } from '../dto/riderDTOs/create-rider.dto';
 import { UpdateRiderDto } from '../dto/riderDTOs/update-rider.dto';
-import { Rider } from '../entities/rider.entity';
+import {  RiderProfile } from '../entities/rider.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { CreateDailyDeliveryDto } from '../dto/deliveryDTOs/create-delivery.dto';
@@ -21,12 +21,17 @@ import { UpdateAreaDto } from '../dto/areaDTOs/update-Area.dto';
 import { Zone } from '../entities/zone.entity';
 import { CreateZoneDto } from '../dto/areaDTOs/createZone.dto';
 import { UpdateZoneDto } from '../dto/areaDTOs/update-zone.dto';
+import { HttpService } from '@nestjs/axios';
+import { firstValueFrom } from 'rxjs';
+import { REQUEST } from '@nestjs/core';
+
+
 
 @Injectable()
 export class RiderService {
 
-  constructor( @InjectRepository(Rider)
-  private ridersRepository: Repository<Rider>,
+  constructor( @InjectRepository(RiderProfile)
+  private ridersProfileRepository: Repository<RiderProfile>,
   @InjectRepository(DailyDelivery)
   private dailyDeliveryRepository: Repository<DailyDelivery>,
   @InjectRepository(DeliveryItem)
@@ -40,46 +45,88 @@ export class RiderService {
   @InjectRepository(Area)
   private areaRepository: Repository<Area>,
   @InjectRepository(Zone)
-  private zoneRepository: Repository<Zone>
+  private zoneRepository: Repository<Zone>,
+
+  private httpService:HttpService,
+
+  @Inject(REQUEST) private readonly request:Request
 ){}
 
 
-  createRider(newRider: CreateRiderDto) {
+  async createRiderProfile(userId:number) {
 
-    const rider = this.ridersRepository.create(newRider);
+   const user =await this.verifyRiderInSecureNotify(userId);
 
-    const savedRider = this.ridersRepository.save(rider);
+   if(!user)
+   {
+    throw new NotFoundException('Rider not found in secureNotify')
+   }
 
-    return savedRider;
+   const riderProfile = new RiderProfile();
+   riderProfile.userId=userId;
+
+   return this.ridersProfileRepository.save(riderProfile);
+  }
+
+  async verifyRiderInSecureNotify(userId:number)
+  {
+    console.log("i am hitting [verfiyRiderinSNB] method")
+    console.log(`${process.env.SNB_URL}`)
+    try{
+      const currentToken = this.request.headers['authorization'];
+     const response = await firstValueFrom( this.httpService.get(
+      `${process.env.SNB_URL}/user/getAsRider/${userId}`,
+      {
+        headers:{
+          'Authorization': currentToken
+        }
+      }
+     ))
+
+     const user= response.data;
+
+     console.log("the user data returned to VerRidInSNB is : ",user)
+
+     if(user.role!== 'RIDER')
+     {
+      throw new UnauthorizedException('User is not rider');
+     }
+
+     return user;
+    }
+    catch(error)
+    {
+      throw new UnauthorizedException('Failed to verify rider');
+    }
   }
 
   findAll() {
-    return this.ridersRepository.find();
+    return this.ridersProfileRepository.find();
   }
 
   getRider(id: number) {
-    return this.ridersRepository.findOneBy({
+    return this.ridersProfileRepository.findOneBy({
       id
     })
   }
 
   async updateRider(id: number, updateRider: UpdateRiderDto) {
 
-    await this.ridersRepository.update(id,updateRider);
+    await this.ridersProfileRepository.update(id,updateRider);
 
-    return this.ridersRepository.findOneBy({
+    return this.ridersProfileRepository.findOneBy({
       id
     })
   }
 
   async removeRider(id: number) {
-    const rider = await this.ridersRepository.findOneBy({
+    const rider = await this.ridersProfileRepository.findOneBy({
       id
     })
 
     rider.isDeleted = !rider.isDeleted;
 
-    return await this.ridersRepository.save(rider);
+    return await this.ridersProfileRepository.save(rider);
   }
 
 
@@ -226,7 +273,7 @@ export class RiderService {
   async assignCustomersToRider(riderId:number, customerIds:number[])
   {
       const [rider, customers] = await Promise.all([
-        this.ridersRepository.findOne({
+        this.ridersProfileRepository.findOne({
           where : {id : riderId, isDeleted : false},
           relations: ['assignments']
         }),
@@ -287,7 +334,7 @@ export class RiderService {
       throw new NotFoundException('Assingment with ID ${assignmentId} not found');
      }
 
-     const newRider = await this.ridersRepository.findOne({
+     const newRider = await this.ridersProfileRepository.findOne({
       where:{id:newRiderId, isDeleted:false}
      });
 
