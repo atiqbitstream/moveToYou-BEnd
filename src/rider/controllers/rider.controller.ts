@@ -29,6 +29,8 @@ import { JwtAuthGuard } from 'src/customer/guards/jwt-auth.guard';
 import { RolesGuard } from '../guards/roles.guard';
 import { Roles } from '../decorators/roles.decorator';
 import { ERole } from '../enums/roles.enum';
+import { Inject } from '@nestjs/common';
+import { REQUEST } from '@nestjs/core';
 
 @Controller('rider')
 export class RiderController {
@@ -36,10 +38,11 @@ export class RiderController {
 
 
   @UseGuards(JwtAuthGuard,RolesGuard)
-  @Roles(ERole.USER)
-  @Post('create')
-  createRider(@Body() createRiderDto: CreateRiderDto) {
-    return this.riderService.createRider(createRiderDto);
+  @Roles(ERole.ADMIN)
+  @Post('createRiderProfile/:userId')
+  createRiderConnection(@Param('userId') userId:number) {
+    console.log('i am hitting createRiderconnection')
+    return this.riderService.createRiderProfile(userId);
   }
 
   @UseGuards(JwtAuthGuard)
