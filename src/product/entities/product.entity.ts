@@ -16,4 +16,7 @@ export class Product {
    @Column({default:false})
   isDeleted:boolean;
 
+  @Column()
+  organizationId:number;
+
 }

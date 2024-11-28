@@ -1,6 +1,5 @@
 import { Customer } from './../../customer/entities/customer.entity';
 import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { RiderProfile } from './rider.entity';
 import { DeliveryItem } from './deliveryItem.entity';
 
 @Entity()
@@ -28,8 +27,8 @@ export class DailyDelivery
      customer:Customer;
 
 
-    @ManyToOne(()=>RiderProfile,(rider)=>rider.dailyDeliveries)
-    rider:RiderProfile;
+    @Column()
+    riderId:string;
 
     @OneToMany(()=>DeliveryItem,(deliveryItem)=>deliveryItem.dailyDelivery,{cascade:true})
     deliveryItems:DeliveryItem[];

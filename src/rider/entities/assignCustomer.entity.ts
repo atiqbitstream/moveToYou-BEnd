@@ -1,5 +1,4 @@
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { RiderProfile } from "./rider.entity";
 import { Customer } from "src/customer/entities/customer.entity";
 
 @Entity()
@@ -8,8 +7,8 @@ export class AssignCustomer
     @PrimaryGeneratedColumn()
     id:number;
 
-    @ManyToOne(()=>RiderProfile,(rider)=>rider.assignments,{onDelete: 'CASCADE',eager:true})
-    rider:RiderProfile;
+    @Column()
+    riderId:string;
 
     @ManyToOne(()=>Customer,(customer)=>customer.assignments, {onDelete:'CASCADE',eager:true})
     customer:Customer;
