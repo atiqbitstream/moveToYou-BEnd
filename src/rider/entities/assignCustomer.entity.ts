@@ -8,7 +8,7 @@ export class AssignCustomer
     id:number;
 
     @Column()
-    riderId:string;
+    riderId:number;
 
     @ManyToOne(()=>Customer,(customer)=>customer.assignments, {onDelete:'CASCADE',eager:true})
     customer:Customer;

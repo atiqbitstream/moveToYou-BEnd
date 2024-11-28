@@ -41,29 +41,28 @@ export class RiderController {
   @Roles(ERole.ADMIN)
   @Post('createRiderProfile/:userId')
   createRiderConnection(@Param('userId') userId:number) {
-    console.log('i am hitting createRiderconnection')
-    return this.riderService.createRiderProfile(userId);
+    
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('getAllRiders')
   findAllRiders() {
-    return this.riderService.findAll();
+   
   }
 
   @Get('profile/:id')
   getRider(@Param('id') id: number) {
-    return this.riderService.getRider(id);
+    
   }
 
   @Patch('update/:id')
   updateRider(@Param('id') id: number, @Body() updateRider: UpdateRiderDto) {
-    return this.riderService.updateRider(id, updateRider);
+   
   }
 
   @Delete('delete/:id')
   removeRider(@Param('id') id: number) {
-    return this.riderService.removeRider(id);
+   
   }
 
   //crud for dailyDelivery
@@ -152,21 +151,21 @@ export class RiderController {
   }
 
   //crud for assignCustomer   (we can assign customers to rider)
-  @Post('assignCustomers/:riderId')
-  async assignCustomers(
-    @Param('riderId', ParseIntPipe) riderId: number,
-    @Body('customerIds') customerIds: number[],
-  ) {
-    const assignedCustomers = await this.riderService.assignCustomersToRider(
-      riderId,
-      customerIds,
-    );
+  // @Post('assignCustomers/:riderId')
+  // async assignCustomers(
+  //   @Param('riderId', ParseIntPipe) riderId: number,
+  //   @Body('customerIds') customerIds: number[],
+  // ) {
+  //   const assignedCustomers = await this.riderService.assignCustomersToRider(
+  //     riderId,
+  //     customerIds,
+  //   );
 
-    return {
-      message: 'customers assigned successfully to Riders',
-      data: assignedCustomers,
-    };
-  }
+  //   return {
+  //     message: 'customers assigned successfully to Riders',
+  //     data: assignedCustomers,
+  //   };
+  // }
 
   @Get('getAssignedCustomers/:riderId')
   async getAssignedCustomers(@Param('riderId', ParseIntPipe) riderId: number) {
@@ -176,24 +175,24 @@ export class RiderController {
     return assignedCustomers;
   }
 
-  @Patch('updateAssignedCustomers/:assignCustomerId')
-  async updateAssignedCustomers(
-    @Param('assignCustomerId', ParseIntPipe) assignCustomerId: number,
-    @Body()
-    updateData: {
-      newRiderId: number;
-      newCustomerIds: number[];
-    },
-  ) {
-    const updatedAssignedCustomers =
-      await this.riderService.updateAssignedCustomers(
-        assignCustomerId,
-        updateData.newRiderId,
-        updateData.newCustomerIds,
-      );
+  // @Patch('updateAssignedCustomers/:assignCustomerId')
+  // async updateAssignedCustomers(
+  //   @Param('assignCustomerId', ParseIntPipe) assignCustomerId: number,
+  //   @Body()
+  //   updateData: {
+  //     newRiderId: number;
+  //     newCustomerIds: number[];
+  //   },
+  // ) {
+  //   const updatedAssignedCustomers =
+  //     await this.riderService.updateAssignedCustomers(
+  //       assignCustomerId,
+  //       updateData.newRiderId,
+  //       updateData.newCustomerIds,
+  //     );
 
-    return updatedAssignedCustomers;
-  }
+  //   return updatedAssignedCustomers;
+  // }
 
   @Delete('delete/assignedCustomer/:id')
   removeAssignedCustomers(@Param('id') id: number) {

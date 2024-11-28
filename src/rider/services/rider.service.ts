@@ -1,7 +1,6 @@
 import { BadRequestException, Inject, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateRiderDto } from '../dto/riderDTOs/create-rider.dto';
 import { UpdateRiderDto } from '../dto/riderDTOs/update-rider.dto';
-import {  RiderProfile } from '../entities/rider.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { CreateDailyDeliveryDto } from '../dto/deliveryDTOs/create-delivery.dto';
@@ -30,8 +29,7 @@ import { REQUEST } from '@nestjs/core';
 @Injectable()
 export class RiderService {
 
-  constructor( @InjectRepository(RiderProfile)
-  private ridersProfileRepository: Repository<RiderProfile>,
+  constructor( 
   @InjectRepository(DailyDelivery)
   private dailyDeliveryRepository: Repository<DailyDelivery>,
   @InjectRepository(DeliveryItem)
@@ -53,83 +51,10 @@ export class RiderService {
 ){}
 
 
-  async createRiderProfile(userId:number) {
+ 
+  
 
-   const user =await this.verifyRiderInSecureNotify(userId);
-
-   if(!user)
-   {
-    throw new NotFoundException('Rider not found in secureNotify')
-   }
-
-   const riderProfile = new RiderProfile();
-   riderProfile.userId=userId;
-
-   return this.ridersProfileRepository.save(riderProfile);
-  }
-
-  async verifyRiderInSecureNotify(userId:number)
-  {
-    console.log("i am hitting [verfiyRiderinSNB] method")
-    console.log(`${process.env.SNB_URL}`)
-    try{
-      const currentToken = this.request.headers['authorization'];
-     const response = await firstValueFrom( this.httpService.get(
-      `${process.env.SNB_URL}/user/getAsRider/${userId}`,
-      {
-        headers:{
-          'Authorization': currentToken
-        }
-      }
-     ))
-
-     const user= response.data;
-
-     console.log("the user data returned to VerRidInSNB is : ",user)
-
-     if(user.role!== 'RIDER')
-     {
-      throw new UnauthorizedException('User is not rider');
-     }
-
-     return user;
-    }
-    catch(error)
-    {
-      throw new UnauthorizedException('Failed to verify rider');
-    }
-  }
-
-  findAll() {
-    return this.ridersProfileRepository.find();
-  }
-
-  getRider(id: number) {
-    return this.ridersProfileRepository.findOneBy({
-      id
-    })
-  }
-
-  async updateRider(id: number, updateRider: UpdateRiderDto) {
-
-    await this.ridersProfileRepository.update(id,updateRider);
-
-    return this.ridersProfileRepository.findOneBy({
-      id
-    })
-  }
-
-  async removeRider(id: number) {
-    const rider = await this.ridersProfileRepository.findOneBy({
-      id
-    })
-
-    rider.isDeleted = !rider.isDeleted;
-
-    return await this.ridersProfileRepository.save(rider);
-  }
-
-
+ 
 
   //crud for dailyDelivery entity
 
@@ -270,37 +195,37 @@ export class RiderService {
 
   //crud for assignCustomer To Riders
 
-  async assignCustomersToRider(riderId:number, customerIds:number[])
-  {
-      const [rider, customers] = await Promise.all([
-        this.ridersProfileRepository.findOne({
-          where : {id : riderId, isDeleted : false},
-          relations: ['assignments']
-        }),
-        this.customerRepository.find({
-          where: { id: In(customerIds), isDeleted: false }
-      })
-      ])
+  // async assignCustomersToRider(riderId:number, customerIds:number[])
+  // {
+  //     const [rider, customers] = await Promise.all([
+  //       this.ridersProfileRepository.findOne({
+  //         where : {id : riderId, isDeleted : false},
+  //         relations: ['assignments']
+  //       }),
+  //       this.customerRepository.find({
+  //         where: { id: In(customerIds), isDeleted: false }
+  //     })
+  //     ])
 
-      if(!rider)
-      {
-        throw new NotFoundException(`Rider with ID ${riderId} not found `)
-      }
+  //     if(!rider)
+  //     {
+  //       throw new NotFoundException(`Rider with ID ${riderId} not found `)
+  //     }
 
-      if(customers.length !== customerIds.length)
-      {
-         throw new BadRequestException('Some customers were not found');
-      }
+  //     if(customers.length !== customerIds.length)
+  //     {
+  //        throw new BadRequestException('Some customers were not found');
+  //     }
 
-      const assignments = customers.map(customer=>{
-        const assignment = new AssignCustomer();
-        assignment.rider=rider;
-        assignment.customer=customer;
-        return assignment;
-      });
+  //     const assignments = customers.map(customer=>{
+  //       const assignment = new AssignCustomer();
+  //       assignment.rider=rider;
+  //       assignment.customer=customer;
+  //       return assignment;
+  //     });
 
-      return await this.assignCustomerRepo.save(assignments);
-  }
+  //     return await this.assignCustomerRepo.save(assignments);
+  // }
 
   async getAssignedCustomers(riderId:number)
   {
@@ -322,42 +247,42 @@ export class RiderService {
      return assignedCustomers.map(assignedCustomer=>assignedCustomer.customer)
   }
 
-  async updateAssignedCustomers(assignCustomerId:number,newRiderId:number, newCustomerIds:number[])
-  {
-     const assignedCustomers = await this.assignCustomerRepo.findOne({
-      where : {id:assignCustomerId, isDeleted:false},
-      relations:['customer']
-     })
+  // async updateAssignedCustomers(assignCustomerId:number,newRiderId:number, newCustomerIds:number[])
+  // {
+  //    const assignedCustomers = await this.assignCustomerRepo.findOne({
+  //     where : {id:assignCustomerId, isDeleted:false},
+  //     relations:['customer']
+  //    })
 
-     if(!assignedCustomers)
-     {
-      throw new NotFoundException('Assingment with ID ${assignmentId} not found');
-     }
+  //    if(!assignedCustomers)
+  //    {
+  //     throw new NotFoundException('Assingment with ID ${assignmentId} not found');
+  //    }
 
-     const newRider = await this.ridersProfileRepository.findOne({
-      where:{id:newRiderId, isDeleted:false}
-     });
+  //    const newRider = await this.ridersProfileRepository.findOne({
+  //     where:{id:newRiderId, isDeleted:false}
+  //    });
 
-     if(!newRider)
-     {
-      throw new NotFoundException(`Rider with ID ${newRiderId} not found`)
-     }
+  //    if(!newRider)
+  //    {
+  //     throw new NotFoundException(`Rider with ID ${newRiderId} not found`)
+  //    }
 
-     const newCustomers =await this.customerRepository.find({
-        where : {id:In(newCustomerIds), isDeleted:false}
-     })
+  //    const newCustomers =await this.customerRepository.find({
+  //       where : {id:In(newCustomerIds), isDeleted:false}
+  //    })
 
-     if(newCustomers.length!==newCustomerIds.length)
-     {
-      throw new BadRequestException('Some customers were not found')
-     }
+  //    if(newCustomers.length!==newCustomerIds.length)
+  //    {
+  //     throw new BadRequestException('Some customers were not found')
+  //    }
 
-    assignedCustomers.rider=newRider;
-    assignedCustomers.customer=newCustomers[0];
+  //   assignedCustomers.rider=newRider;
+  //   assignedCustomers.customer=newCustomers[0];
 
-    return await this.assignCustomerRepo.save(assignedCustomers);
+  //   return await this.assignCustomerRepo.save(assignedCustomers);
 
-  }
+  // }
 
   async removeAssignedCustomers(id:number)
   {

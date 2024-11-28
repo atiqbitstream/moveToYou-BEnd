@@ -7,23 +7,31 @@ import { HttpService } from '@nestjs/axios';
 import { lastValueFrom, Observable } from 'rxjs';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { promises } from 'dns';
+import { RolesGuard } from 'src/rider/guards/roles.guard';
+import { Roles } from 'src/rider/decorators/roles.decorator';
+import { ERole } from 'src/rider/enums/roles.enum';
 
+@UseGuards(JwtAuthGuard,RolesGuard)
+  @Roles(ERole.ADMIN)
 @Controller('customer')
 export class CustomerController {
   constructor(private readonly customerService: CustomerService, private httpService:HttpService) {}
 
 
-  @UseGuards(JwtAuthGuard)
+
   @Get('verification')
   async userVerification() {
     console.log("i am in customerveriffication controller")   
   }
 
 
+  
   @Post('create')
   async createCustomer(@Body() createCustomer:CreateCustomerDto){
     return this.customerService.create(createCustomer);
   }
+
+
 
   @Get('profile/:id')
   getCustomer(@Param('id') id: number) {

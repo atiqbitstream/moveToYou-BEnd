@@ -43,6 +43,9 @@ export class Customer {
   organization: string;
 
   @Column()
+  organizationId:number;
+
+  @Column()
   status: boolean;
 
   @Column()

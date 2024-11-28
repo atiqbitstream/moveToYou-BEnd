@@ -9,6 +9,7 @@ export class CreateCustomerDto {
   googlePin: string;
   homePicture: string;
   organization: string;
+  organizationId:number
   status: boolean;
   contract: string;
 

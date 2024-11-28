@@ -28,7 +28,7 @@ export class DailyDelivery
 
 
     @Column()
-    riderId:string;
+    riderId:number;
 
     @OneToMany(()=>DeliveryItem,(deliveryItem)=>deliveryItem.dailyDelivery,{cascade:true})
     deliveryItems:DeliveryItem[];

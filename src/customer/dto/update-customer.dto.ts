@@ -48,5 +48,9 @@ export class UpdateCustomerDto extends PartialType(CreateCustomerDto) {
     @IsString()
     contract?: string;
 
+    @IsOptional()
+    @IsString()
+    organizationId?: number;
+
 }
 
