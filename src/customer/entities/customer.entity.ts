@@ -68,4 +68,5 @@ export class Customer {
 
   @Column({default:false})
   isDeleted:boolean;
+ 
 }

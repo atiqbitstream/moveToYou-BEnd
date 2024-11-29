@@ -1,5 +1,5 @@
 import { Customer } from './entities/customer.entity';
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, HttpException, HttpStatus, UseGuards} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, HttpException, HttpStatus, UseGuards, Request} from '@nestjs/common';
 import { CustomerService } from './customer.service';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
@@ -33,18 +33,30 @@ export class CustomerController {
 
 
 
-  @Get('profile/:id')
-  getCustomer(@Param('id') id: number) {
-    return this.customerService.findOne(id);
+  @Get('getCustomer')
+  getCustomer(@Query('customerId') customerId:number, @Query('organizationId') organizationId:number) {
+    return this.customerService.findOne(customerId,organizationId);
+  }
+
+  @Get('getAllCustomers')
+  async getAllCustomersByOrganization(@Query('organizationId') organizationId:number):Promise<Customer[]>
+  {
+       return this.customerService.findAll(organizationId);
   }
 
   @Patch('update/:id')
-  updateCustomer(@Param('id') id: number, @Body() updateCustomer: UpdateCustomerDto) {
-    return this.customerService.update(id, updateCustomer);
+  updateCustomer(@Param('id') id: number, @Body() updateCustomer: UpdateCustomerDto, @Request() req):Promise<Customer> {
+
+    const organizationId= req.user.organizationId;
+
+    return this.customerService.update(id,organizationId, updateCustomer);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: number) {
-    return this.customerService.remove(id);
+  @Delete('delete/:id')
+  remove(@Param('id') id: number, @Request() req) {
+
+    const organizationId = req.user.organizationId;
+
+    return this.customerService.remove(id,organizationId);
   }
 }
