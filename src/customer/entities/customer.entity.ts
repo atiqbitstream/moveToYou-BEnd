@@ -1,3 +1,4 @@
+import { IsOptional } from 'class-validator';
 import { Area } from 'src/rider/entities/area.entity';
 import { AssignCustomer } from 'src/rider/entities/assignCustomer.entity';
 import { DailyDelivery } from 'src/rider/entities/dailyDelivery.entity';
@@ -42,10 +43,12 @@ export class Customer {
   @Column()
   organization: string;
 
-  @Column()
+  @Column({nullable:true})
+  @IsOptional()
   organizationId:number;
 
-  @Column()
+  @Column({nullable:true})
+  @IsOptional()
   status: boolean;
 
   @Column()
@@ -60,7 +63,7 @@ export class Customer {
   @ManyToOne(()=>Area,(area)=>area.customers)
   area:Area;
 
-  @Column({ type: 'timestamp', nullable: true })
+  @Column({ type: 'timestamp', default:()=>'CURRENT_TIMESTAMP', nullable:true})
   createdAt: Date;
 
   @Column({ type: 'timestamp', default:()=>'CURRENT_TIMESTAMP',onUpdate: 'CURRENT_TIMESTAMP', nullable:true})
