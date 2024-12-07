@@ -113,7 +113,7 @@ export class CustomerService {
     }
 
 
-    customer.isDeleted = !customer.isDeleted;
+    customer.isDeleted = true;
 
     await this.customersRepository.save(customer);
   }
