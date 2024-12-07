@@ -26,4 +26,7 @@ export class Zone
    @Column()
    organizationId:number;
 
+   @Column({default:false})
+   isTest:boolean;
+
 }

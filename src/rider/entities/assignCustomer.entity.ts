@@ -22,4 +22,7 @@ export class AssignCustomer
 
   @Column({default:false})
   isDeleted:boolean;
+
+  @Column({default:false})
+  isTest:boolean;
 }

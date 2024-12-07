@@ -47,4 +47,7 @@ export class DeliveryItem {
 
   @Column({default:false})
   isDeleted:boolean;
+
+  @Column({default:false})
+  isTest:boolean;
 }
