@@ -19,4 +19,7 @@ export class Product {
   @Column()
   organizationId:number;
 
+  @Column({default:false})
+  isTest:boolean;
+
 }
