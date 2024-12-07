@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { CustomerService } from './customer.service';
+import { CustomerService } from './services/customer.service';
 import { CustomerController } from './customer.controller';
 import { HttpModule, HttpService } from '@nestjs/axios';
-import { TokenService } from './services/token.service';
+import { TokenService } from '../shared/services/token.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Customer } from './entities/customer.entity';
 

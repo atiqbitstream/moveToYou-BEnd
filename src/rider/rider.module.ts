@@ -10,7 +10,7 @@ import { AssignCustomer } from './entities/assignCustomer.entity';
 import { Area } from './entities/area.entity';
 import { Zone } from './entities/zone.entity';
 import { HttpModule } from '@nestjs/axios';
-import { TokenService } from 'src/customer/services/token.service';
+import { TokenService } from 'src/shared/services/token.service';
 
 @Module({
   imports:[HttpModule,TypeOrmModule.forFeature([DailyDelivery,DeliveryItem,Product,Customer,AssignCustomer,Area,Zone]),

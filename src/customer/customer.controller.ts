@@ -1,12 +1,10 @@
 import { Customer } from './entities/customer.entity';
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, HttpException, HttpStatus, UseGuards, Request} from '@nestjs/common';
-import { CustomerService } from './customer.service';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards, Request} from '@nestjs/common';
+import { CustomerService } from './services/customer.service';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
 import { HttpService } from '@nestjs/axios';
-import { lastValueFrom, Observable } from 'rxjs';
 import { JwtAuthGuard } from '../shared/guards/jwt-auth.guard';
-import { promises } from 'dns';
 import { RolesGuard } from 'src/rider/guards/roles.guard';
 import { Roles } from 'src/rider/decorators/roles.decorator';
 import { ERole } from 'src/rider/enums/roles.enum';
