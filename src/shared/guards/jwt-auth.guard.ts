@@ -1,4 +1,4 @@
-import { TokenService } from './../services/token.service';
+import { TokenService } from '../../customer/services/token.service';
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { Request } from 'express';
 import { Reflector } from '@nestjs/core';
