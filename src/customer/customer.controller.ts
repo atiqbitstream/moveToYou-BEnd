@@ -32,7 +32,12 @@ export class CustomerController {
 
 
   @Get('getCustomer')
-  getCustomer(@Query('customerId') customerId:number, @Query('organizationId') organizationId:number) {
+  getCustomer(@Query('customerId') customerId:number, @Request() req) {
+
+
+    const organizationId = req.user.organizationId;
+
+
     return this.customerService.findOne(customerId,organizationId);
   }
 

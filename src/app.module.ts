@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ProductModule } from './product/product.module';
 import { RiderModule } from './rider/rider.module';
+import { FakerModule } from './faker/faker.module';
 
 @Module({
   imports: [CustomerModule,
@@ -28,6 +29,7 @@ import { RiderModule } from './rider/rider.module';
     }),
     ProductModule,
     RiderModule,
+    FakerModule,
   ],
   controllers: [AppController],
   providers: [AppService],
