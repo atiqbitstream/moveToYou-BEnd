@@ -195,37 +195,14 @@ export class RiderService {
 
   //crud for assignCustomer To Riders
 
-  // async assignCustomersToRider(riderId:number, customerIds:number[])
-  // {
-  //     const [rider, customers] = await Promise.all([
-  //       this.ridersProfileRepository.findOne({
-  //         where : {id : riderId, isDeleted : false},
-  //         relations: ['assignments']
-  //       }),
-  //       this.customerRepository.find({
-  //         where: { id: In(customerIds), isDeleted: false }
-  //     })
-  //     ])
-
-  //     if(!rider)
-  //     {
-  //       throw new NotFoundException(`Rider with ID ${riderId} not found `)
-  //     }
-
-  //     if(customers.length !== customerIds.length)
-  //     {
-  //        throw new BadRequestException('Some customers were not found');
-  //     }
-
-  //     const assignments = customers.map(customer=>{
-  //       const assignment = new AssignCustomer();
-  //       assignment.rider=rider;
-  //       assignment.customer=customer;
-  //       return assignment;
-  //     });
-
-  //     return await this.assignCustomerRepo.save(assignments);
-  // }
+  async assignCustomersToRider(riderId:number, customerId:number)
+  {
+   const assignCustomer = this.assignCustomerRepo.create({
+      customerId: customerId,
+      riderId: riderId,
+    });
+    return this.assignCustomerRepo.save(assignCustomer);
+  }
 
   async getAssignedCustomers(riderId:number)
   {

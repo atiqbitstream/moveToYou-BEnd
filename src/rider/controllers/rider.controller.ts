@@ -37,33 +37,7 @@ export class RiderController {
   constructor(private readonly riderService: RiderService) {}
 
 
-  @UseGuards(JwtAuthGuard,RolesGuard)
-  @Roles(ERole.ADMIN)
-  @Post('createRiderProfile/:userId')
-  createRiderConnection(@Param('userId') userId:number) {
-    
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Get('getAllRiders')
-  findAllRiders() {
-   
-  }
-
-  @Get('profile/:id')
-  getRider(@Param('id') id: number) {
-    
-  }
-
-  @Patch('update/:id')
-  updateRider(@Param('id') id: number, @Body() updateRider: UpdateRiderDto) {
-   
-  }
-
-  @Delete('delete/:id')
-  removeRider(@Param('id') id: number) {
-   
-  }
+  
 
   //crud for dailyDelivery
 
@@ -151,21 +125,21 @@ export class RiderController {
   }
 
   //crud for assignCustomer   (we can assign customers to rider)
-  // @Post('assignCustomers/:riderId')
-  // async assignCustomers(
-  //   @Param('riderId', ParseIntPipe) riderId: number,
-  //   @Body('customerIds') customerIds: number[],
-  // ) {
-  //   const assignedCustomers = await this.riderService.assignCustomersToRider(
-  //     riderId,
-  //     customerIds,
-  //   );
+   @Post('assignCustomer/:riderId')
+  async assignCustomers(
+    @Param('riderId') riderId: number,
+    @Body('customerId') customerId: number,
+  ) {
+    const assignedCustomers = await this.riderService.assignCustomersToRider(
+      riderId,
+      customerId,
+    );
 
-  //   return {
-  //     message: 'customers assigned successfully to Riders',
-  //     data: assignedCustomers,
-  //   };
-  // }
+    return {
+      message: 'customer assigned successfully to Rider',
+      data: assignedCustomers,
+    };
+  }
 
   @Get('getAssignedCustomers/:riderId')
   async getAssignedCustomers(@Param('riderId', ParseIntPipe) riderId: number) {

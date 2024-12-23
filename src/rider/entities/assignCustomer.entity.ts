@@ -10,6 +10,9 @@ export class AssignCustomer
     @Column()
     riderId:number;
 
+    @Column()
+    customerId:number;
+
     @ManyToOne(()=>Customer,(customer)=>customer.assignments, {onDelete:'CASCADE',eager:true})
     customer:Customer;
 
