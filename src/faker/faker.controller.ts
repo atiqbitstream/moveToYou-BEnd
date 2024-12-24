@@ -5,9 +5,15 @@ import { FakerService } from './faker.service';
 export class FakerController {
     constructor(private readonly fakerService: FakerService) {}
 
-  @Post()
-  async populateDb()
+  @Post('customers')
+  async populateCustomers()
   {
     return await this.fakerService.createRandomCustomers();
+  }
+
+  @Post('products')
+  async populateProducts()
+  {
+     return await this.fakerService.createRandomProducts();
   }
 }

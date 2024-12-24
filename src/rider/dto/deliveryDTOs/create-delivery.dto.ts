@@ -14,7 +14,7 @@ export class CreateDailyDeliveryDto {
   customerId: number;
 
   @IsInt()
-  riderId: number;
+  riderId?: number;
 
   @IsBoolean()
   @IsOptional()

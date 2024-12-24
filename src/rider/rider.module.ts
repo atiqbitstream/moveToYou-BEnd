@@ -18,5 +18,6 @@ import { TokenService } from 'src/shared/services/token.service';
 ],
   controllers: [RiderController, ],
   providers: [RiderService,TokenService],
+  exports:[RiderService]
 })
 export class RiderModule {}

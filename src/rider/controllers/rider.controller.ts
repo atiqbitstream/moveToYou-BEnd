@@ -1,4 +1,4 @@
-import { AssignCustomer } from './../entities/assignCustomer.entity';
+
 import {
   Controller,
   Get,
@@ -10,12 +10,10 @@ import {
   ParseIntPipe,
   UseGuards,
 } from '@nestjs/common';
-import { CreateRiderDto } from '../dto/riderDTOs/create-rider.dto';
-import { UpdateRiderDto } from '../dto/riderDTOs/update-rider.dto';
 import { CreateDailyDeliveryDto } from '../dto/deliveryDTOs/create-delivery.dto';
 import { RiderService } from '../services/rider.service';
 import { UpdateDeliveryDto } from '../dto/deliveryDTOs/update-delivery.dto';
-import { get } from 'http';
+
 import { CreateDeliveryItemDto } from '../dto/deliveryDTOs/delivery-item.dto';
 import { UpdateDeliveryItemDto } from '../dto/deliveryDTOs/update-delivery-item.dto';
 import { CreateProductDto } from 'src/product/dto/create-product.dto';
@@ -25,12 +23,8 @@ import { CreateAreaDto } from '../dto/areaDTOs/createArea.dto';
 import { UpdateAreaDto } from '../dto/areaDTOs/update-Area.dto';
 import { CreateZoneDto } from '../dto/areaDTOs/createZone.dto';
 import { UpdateZoneDto } from '../dto/areaDTOs/update-zone.dto';
+import { Request } from '@nestjs/common'
 import { JwtAuthGuard } from 'src/shared/guards/jwt-auth.guard';
-import { RolesGuard } from '../guards/roles.guard';
-import { Roles } from '../decorators/roles.decorator';
-import { ERole } from '../enums/roles.enum';
-import { Inject } from '@nestjs/common';
-import { REQUEST } from '@nestjs/core';
 
 @Controller('rider')
 export class RiderController {
@@ -51,16 +45,27 @@ export class RiderController {
   }
 
   //create dailyDelivery without deliveryItems array
-
+  @UseGuards(JwtAuthGuard)
   @Post('createDailyDelivery')
-  createDailyDelivery(@Body() newDelivery: CreateDailyDeliveryDto) {
+  createDailyDelivery(@Body() newDelivery: CreateDailyDeliveryDto, @Request() req) {
     console.log('Controller received newDelivery:', newDelivery);
+
+    if(!newDelivery.date)
+    {
+      newDelivery.date=new Date().toISOString();
+    }
+    newDelivery.riderId=req.user.id;
+
     return this.riderService.createDelivery(newDelivery);
   }
 
-  @Get('getDailyDelivery/:id')
-  getDailyDelivery(@Param('id') id: number) {
-    return this.riderService.getDailyDelivery(id);
+
+  @UseGuards(JwtAuthGuard)
+  @Get('getDailyDelivery')
+  getDailyDelivery( @Request() req) {
+
+    const riderId = req.user.id;
+    return this.riderService.getDailyDelivery(riderId);
   }
 
   @Patch('updateDailyDelivery/:id')

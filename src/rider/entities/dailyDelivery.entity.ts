@@ -20,9 +20,6 @@ export class DailyDelivery
     @Column({ nullable: true })
     customerId:number;
 
-    @Column({ nullable: true })
-    userId:number;     //Reference to user in secureNotify
-
     @ManyToOne(()=>Customer,(customer)=>customer.dailyDeliveries)
      customer:Customer;
 

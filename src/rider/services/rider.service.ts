@@ -1,6 +1,4 @@
-import { BadRequestException, Inject, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { CreateRiderDto } from '../dto/riderDTOs/create-rider.dto';
-import { UpdateRiderDto } from '../dto/riderDTOs/update-rider.dto';
+import { Inject, Injectable,} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { CreateDailyDeliveryDto } from '../dto/deliveryDTOs/create-delivery.dto';
@@ -21,7 +19,6 @@ import { Zone } from '../entities/zone.entity';
 import { CreateZoneDto } from '../dto/areaDTOs/createZone.dto';
 import { UpdateZoneDto } from '../dto/areaDTOs/update-zone.dto';
 import { HttpService } from '@nestjs/axios';
-import { firstValueFrom } from 'rxjs';
 import { REQUEST } from '@nestjs/core';
 
 
@@ -86,11 +83,33 @@ export class RiderService {
 
   }
 
-  getDailyDelivery(id:number)
+  getDailyDelivery(riderId:number)
   {
-    return this.dailyDeliveryRepository.findOneBy({
-      id
-    })
+    return this.dailyDeliveryRepository.find({
+      where: { 
+        riderId: riderId 
+      },
+      relations: ['customer'], // This will fetch the related customer data
+      select: {
+        id: true,
+        date: true,
+        // Select specific daily delivery fields you want
+        customer: {
+          // Specify which customer fields you want to return
+          id: true,
+          firstName: true,
+          lastName: true,
+          phoneNumber: true,
+          address: true,
+          sector: true,
+          street: true,
+          googlePin:true,
+          organization:true,
+          status:true
+          // Add other fields as needed
+        }
+      }
+    });
   }
 
   async updateDailyDelivery(id:number, updateDailyDelivery:UpdateDeliveryDto)
@@ -206,22 +225,12 @@ export class RiderService {
 
   async getAssignedCustomers(riderId:number)
   {
-     const assignedCustomers = await this.assignCustomerRepo.createQueryBuilder('assignedCustomer')
-     .leftJoinAndSelect('assignedCustomer.customer','customer')
-     .where('assignedCustomer.rider.id=:riderId',{riderId})
-     .andWhere('assignedCustomer.isDeleted=:isDeleted',{isDeleted:false})
-     .select([
-      'assignedCustomer.id',
-      'customer.id',
-      'customer.firstName',
-      'customer.lastName',
-      'customer.phoneNumber',
-      'customer.address',
-      'customer.sector'
-     ])
-     .getMany();
-
-     return assignedCustomers.map(assignedCustomer=>assignedCustomer.customer)
+    const assignments = await this.assignCustomerRepo.find({
+      where: { riderId: riderId, isDeleted: false },  // filter by riderId and ensure it's not deleted
+      relations: ['customer'],
+    });
+  
+    return assignments.map(assignment => assignment.customer);
   }
 
   // async updateAssignedCustomers(assignCustomerId:number,newRiderId:number, newCustomerIds:number[])

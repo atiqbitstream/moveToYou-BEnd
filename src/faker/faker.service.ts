@@ -1,10 +1,12 @@
+import { ProductService } from './../product/services/product.service';
 import { Injectable } from '@nestjs/common';
 import { CustomerService } from 'src/customer/services/customer.service';
+import { RiderService } from 'src/rider/services/rider.service';
 
 @Injectable()
 export class FakerService {
 
-    constructor(private customerService:CustomerService){}
+    constructor(private customerService:CustomerService, private riderService:RiderService){}
     
     async createRandomCustomers() {
         const CustomersEmaan = await Promise.all([
@@ -148,5 +150,43 @@ export class FakerService {
           CustomersFresh
         };
       }
+
+      async createRandomProducts() {
+        const products = ['Peanut Butter', 'Milk', 'Yoghurt', 'Pure Honey', 'Olive Oil'];
+    
+        const emaanDairyProducts = await Promise.all(
+          products.map((productName) =>
+            this.riderService.createProduct({
+              name: productName,
+              organizationId: 1, // EmaanDairy
+            }),
+          ),
+        );
+    
+        const newDairyProducts = await Promise.all(
+          products.map((productName) =>
+            this.riderService.createProduct({
+              name: productName,
+              organizationId: 2, // NewDairy
+            }),
+          ),
+        );
+    
+        const freshDairyProducts = await Promise.all(
+          products.map((productName) =>
+            this.riderService.createProduct({
+              name: productName,
+              organizationId: 3, // FreshDairy
+            }),
+          ),
+        );
+    
+        return {
+          emaanDairyProducts,
+          newDairyProducts,
+          freshDairyProducts,
+        };
+      }
+    
       
 }
