@@ -1,4 +1,4 @@
-import { IsDateString, } from "class-validator";
+import { isArray, IsDateString, } from "class-validator";
 
 export class CreateDeliveryItemDto
 {
@@ -9,8 +9,8 @@ export class CreateDeliveryItemDto
     Qty:number;
 
     price:number;
-
-    productId:number;
+    
+    productId:number[];
 
     dailyDeliveryId:number;
 }

@@ -7,8 +7,8 @@ import { UpdateDeliveryDto } from '../dto/deliveryDTOs/update-delivery.dto';
 import { CreateDeliveryItemDto } from '../dto/deliveryDTOs/delivery-item.dto';
 import { DeliveryItem } from '../entities/deliveryItem.entity';
 import { Product } from 'src/product/entities/product.entity';
-import { CreateProductDto } from 'src/product/dto/create-product.dto';
-import { UpdateProductDto } from 'src/product/dto/update-product.dto';
+
+
 import { CreateDeliveryWithItemDto } from '../dto/deliveryDTOs/delivery-with-item.dto';
 import { Customer } from 'src/customer/entities/customer.entity';
 import { AssignCustomer } from '../entities/assignCustomer.entity';
@@ -20,6 +20,8 @@ import { CreateZoneDto } from '../dto/areaDTOs/createZone.dto';
 import { UpdateZoneDto } from '../dto/areaDTOs/update-zone.dto';
 import { HttpService } from '@nestjs/axios';
 import { REQUEST } from '@nestjs/core';
+import { CreateProductDto } from '../dto/productDTOs/create-product.dto';
+import { UpdateProductDto } from '../dto/productDTOs/update-product.dto';
 
 
 
@@ -57,16 +59,16 @@ export class RiderService {
 
   createDeliveryWithItem(newDeliveryWithItem:CreateDeliveryWithItemDto)
   {
-    const deliveryWithItemData = {
-      ...newDeliveryWithItem,
-      date:new Date(newDeliveryWithItem.date)
-    }
+    // const deliveryWithItemData = {
+    //   ...newDeliveryWithItem,
+    //   date:new Date(newDeliveryWithItem.date)
+    // }
 
-    const deliveryWithItem = this.dailyDeliveryRepository.create(deliveryWithItemData);
+    // const deliveryWithItem = this.dailyDeliveryRepository.create(deliveryWithItemData);
 
-    const savedDeliveryWithItem = this.dailyDeliveryRepository.save(deliveryWithItem);
+    // const savedDeliveryWithItem = this.dailyDeliveryRepository.save(deliveryWithItem);
 
-    return savedDeliveryWithItem;
+    // return savedDeliveryWithItem;
   }
 
   createDelivery(newDelivery:CreateDailyDeliveryDto)
@@ -112,6 +114,29 @@ export class RiderService {
     });
   }
 
+  //get daily deliveries with items
+
+  getDailyDeliveryWithItems(riderId:number)
+  {
+    return this.dailyDeliveryRepository.find({
+      where: { 
+        riderId: riderId 
+      },
+      relations: ['customer','deliveryItems.product'], // This will fetch the related customer data
+      select: {
+        id: true,
+        date: true,
+        // Select specific daily delivery fields you want
+        customer: {
+          // Specify which customer fields you want to return
+          id: true,
+          firstName: true,
+          // Add other fields as needed
+        }
+      }
+    });
+  }
+
   async updateDailyDelivery(id:number, updateDailyDelivery:UpdateDeliveryDto)
   {
     await this.dailyDeliveryRepository.update(id,updateDailyDelivery);
@@ -134,24 +159,28 @@ export class RiderService {
   //crud for delivery item entity
 
 
-  createDeliveryItem(newDelivery:CreateDeliveryItemDto)
+  async createDeliveryItem(newDelivery:CreateDeliveryItemDto)
   {
-    const deliveryItemData = {
-      ...newDelivery,
-      data:new Date(newDelivery.date)
-    }
+    const deliveryItems = newDelivery.productId.map(productId=>{
+      const deliveryItemData={
+        ...newDelivery,
+        productId:productId,
+        date:newDelivery.date ? new Date(newDelivery.date) : new Date()
+      };
 
-    const DeliveryItem = this.deliveryItemRepository.create(deliveryItemData);
+      return this.deliveryItemRepository.create(deliveryItemData)
+    })
 
-    const  savedDeliveryItem = this.deliveryItemRepository.save(DeliveryItem);
-
-    return savedDeliveryItem;
+    const savedDeliveryItems = await this.deliveryItemRepository.save(deliveryItems);
+    return savedDeliveryItems;
   }
 
-  getDelieveryItem(id:number)
+  getDelieveryItem(dailyDeliveryId:number)
   {
-    return this.deliveryItemRepository.findOneBy({
-      id
+    return this.deliveryItemRepository.find({
+      where:{
+        dailyDeliveryId:dailyDeliveryId,
+      }
     })
   }
 
@@ -190,6 +219,15 @@ export class RiderService {
   {
     return this.productRepository.findOneBy({
       id
+    })
+  }
+
+  getAllProducts(organizationId:number)
+  {
+    return this.productRepository.find({
+      where:{
+        organizationId:organizationId
+      }
     })
   }
 

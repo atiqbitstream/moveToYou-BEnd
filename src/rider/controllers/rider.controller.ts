@@ -16,8 +16,8 @@ import { UpdateDeliveryDto } from '../dto/deliveryDTOs/update-delivery.dto';
 
 import { CreateDeliveryItemDto } from '../dto/deliveryDTOs/delivery-item.dto';
 import { UpdateDeliveryItemDto } from '../dto/deliveryDTOs/update-delivery-item.dto';
-import { CreateProductDto } from 'src/product/dto/create-product.dto';
-import { UpdateProductDto } from 'src/product/dto/update-product.dto';
+
+
 import { CreateDeliveryWithItemDto } from '../dto/deliveryDTOs/delivery-with-item.dto';
 import { CreateAreaDto } from '../dto/areaDTOs/createArea.dto';
 import { UpdateAreaDto } from '../dto/areaDTOs/update-Area.dto';
@@ -25,6 +25,8 @@ import { CreateZoneDto } from '../dto/areaDTOs/createZone.dto';
 import { UpdateZoneDto } from '../dto/areaDTOs/update-zone.dto';
 import { Request } from '@nestjs/common'
 import { JwtAuthGuard } from 'src/shared/guards/jwt-auth.guard';
+import { CreateProductDto } from '../dto/productDTOs/create-product.dto';
+import { UpdateProductDto } from '../dto/productDTOs/update-product.dto';
 
 @Controller('rider')
 export class RiderController {
@@ -68,6 +70,17 @@ export class RiderController {
     return this.riderService.getDailyDelivery(riderId);
   }
 
+  //get Daily Delivery with delivery items
+  
+  @UseGuards(JwtAuthGuard)
+  @Get('getDailyDeliveryWithItems')
+  getDailyDeliveryWithItems( @Request() req) {
+
+    const riderId = req.user.id;
+    return this.riderService.getDailyDeliveryWithItems(riderId);
+  }
+
+
   @Patch('updateDailyDelivery/:id')
   updateDailyDelivery(
     @Param('id') id: number,
@@ -84,12 +97,17 @@ export class RiderController {
   //crud for deliveryItem entity
   @Post('createDeliveryItem')
   createDeliveryItem(@Body() newDeliveryItem: CreateDeliveryItemDto) {
+    if(!newDeliveryItem.date)
+      {
+        newDeliveryItem.date=new Date().toISOString();
+      }
     return this.riderService.createDeliveryItem(newDeliveryItem);
   }
 
   @Get('getDeliveryItem')
-  getDeliveryItem(@Param('id') id: number) {
-    return this.riderService.getDelieveryItem(id);
+  getDeliveryItem(@Param('dailyDeliveryId') dailyDeliveryId: number) {
+ 
+    return this.riderService.getDelieveryItem(dailyDeliveryId);
   }
 
   @Patch('updateDeliveryItem/:id')
@@ -114,6 +132,15 @@ export class RiderController {
   @Get('getProduct/:id')
   getProduct(@Param('id') id: number) {
     return this.riderService.getProduct(id);
+  }
+
+
+  @UseGuards(JwtAuthGuard)
+  @Get('getAllProducts')
+  getAllProducts(@Request() req)
+  {
+    const orgId = req.user.organizationId
+    return this.riderService.getAllProducts(orgId)
   }
 
   @Patch('updateProduct/:id')
