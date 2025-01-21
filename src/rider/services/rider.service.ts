@@ -22,6 +22,8 @@ import { HttpService } from '@nestjs/axios';
 import { REQUEST } from '@nestjs/core';
 import { CreateProductDto } from '../dto/productDTOs/create-product.dto';
 import { UpdateProductDto } from '../dto/productDTOs/update-product.dto';
+import { UpdateRouteDTO } from '../dto/routeDTOs/update-route.dto';
+import { Route } from '../entities/route.entity';
 
 
 
@@ -46,7 +48,10 @@ export class RiderService {
 
   private httpService:HttpService,
 
-  @Inject(REQUEST) private readonly request:Request
+  @Inject(REQUEST) private readonly request:Request,
+
+  @InjectRepository(Route)
+  private routeRepository: Repository<Route>
 ){}
 
 
@@ -122,7 +127,14 @@ export class RiderService {
       where: { 
         riderId: riderId 
       },
-      relations: ['customer','deliveryItems.product'], // This will fetch the related customer data
+      relations: ['customer','customer.route','deliveryItems.product'], // This will fetch the related customer data
+      order:{
+         customer:{
+          route:{
+            index:'ASC',
+          }
+         }
+      },
       select: {
         id: true,
         date: true,
@@ -146,6 +158,26 @@ export class RiderService {
     })
   }
 
+  async updateRoute(riderId:number,updateRouteData:UpdateRouteDTO[])
+  {
+
+    await this.routeRepository.delete({riderId});
+    
+    const routesToInsert = updateRouteData.map(route=>({
+      riderId,
+      customerId : route.customerId,
+      index : route.index
+    }))
+
+    await this.routeRepository.save(routesToInsert)
+
+    return this.routeRepository.find({
+      where:{riderId},
+      order:{index : 'ASC'}
+    })
+
+  }
+
   async removeDelivery(id: number) {
     const dailyDelivery = await this.dailyDeliveryRepository.findOneBy({
       id
@@ -153,7 +185,7 @@ export class RiderService {
 
     dailyDelivery.isDeleted = !dailyDelivery.isDeleted;
 
-    return await this.dailyDeliveryRepository.save(dailyDelivery);
+    await this.dailyDeliveryRepository.save(dailyDelivery);
   }
 
   //crud for delivery item entity
@@ -265,7 +297,14 @@ export class RiderService {
   {
     const assignments = await this.assignCustomerRepo.find({
       where: { riderId: riderId, isDeleted: false },  // filter by riderId and ensure it's not deleted
-      relations: ['customer'],
+      relations: ['customer','customer.route'],
+      order:{
+        customer:{
+          route:{
+            index:'ASC'
+          }
+        }
+      }
     });
   
     return assignments.map(assignment => assignment.customer);

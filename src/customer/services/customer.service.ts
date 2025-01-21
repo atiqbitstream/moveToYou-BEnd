@@ -5,6 +5,7 @@ import { UpdateCustomerDto } from '../dto/update-customer.dto';
 import { Customer } from '../entities/customer.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Route } from 'src/rider/entities/route.entity';
 
 
 @Injectable()
@@ -12,7 +13,10 @@ export class CustomerService {
 
 
   constructor( @InjectRepository(Customer)
-  private customersRepository: Repository<Customer>,){}
+  private customersRepository: Repository<Customer>,
+  @InjectRepository(Route)
+  private routeRepository: Repository<Route>
+){}
 
   create(newCustomer: CreateCustomerDto) {
 
@@ -117,6 +121,11 @@ export class CustomerService {
 
     await this.customersRepository.save(customer);
   }
+
+
+  
+
+  
 }
 
 

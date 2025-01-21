@@ -27,6 +27,7 @@ import { Request } from '@nestjs/common'
 import { JwtAuthGuard } from 'src/shared/guards/jwt-auth.guard';
 import { CreateProductDto } from '../dto/productDTOs/create-product.dto';
 import { UpdateProductDto } from '../dto/productDTOs/update-product.dto';
+import { UpdateRouteDTO } from '../dto/routeDTOs/update-route.dto';
 
 @Controller('rider')
 export class RiderController {
@@ -102,6 +103,17 @@ export class RiderController {
         newDeliveryItem.date=new Date().toISOString();
       }
     return this.riderService.createDeliveryItem(newDeliveryItem);
+  }
+
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('updateRoutes')
+  updateRoute(@Request() req, @Body() updateRouteData:UpdateRouteDTO[])
+  {
+     const riderId = req.user.id;
+     console.log("The rider id in update route is : ",riderId)
+     console.log("the updatedroutedata is : ",updateRouteData)
+     return this.riderService.updateRoute(riderId, updateRouteData)
   }
 
   @Get('getDeliveryItem')

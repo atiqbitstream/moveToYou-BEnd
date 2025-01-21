@@ -2,12 +2,15 @@ import { IsOptional } from 'class-validator';
 import { Area } from 'src/rider/entities/area.entity';
 import { AssignCustomer } from 'src/rider/entities/assignCustomer.entity';
 import { DailyDelivery } from 'src/rider/entities/dailyDelivery.entity';
+import { Route } from 'src/rider/entities/route.entity';
 import {
   Column,
   Entity,
+  JoinColumn,
   ManyToMany,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -62,6 +65,10 @@ export class Customer {
 
   @ManyToOne(()=>Area,(area)=>area.customers)
   area:Area;
+
+  @OneToOne(()=>Route,(route)=>route.customer)
+  @JoinColumn({name : 'routeId'})
+  route:Route;
 
   @Column({ type: 'timestamp', default:()=>'CURRENT_TIMESTAMP', nullable:true})
   createdAt: Date;

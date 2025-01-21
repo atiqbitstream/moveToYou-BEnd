@@ -11,9 +11,10 @@ import { Area } from './entities/area.entity';
 import { Zone } from './entities/zone.entity';
 import { HttpModule } from '@nestjs/axios';
 import { TokenService } from 'src/shared/services/token.service';
+import { Route } from './entities/route.entity';
 
 @Module({
-  imports:[HttpModule,TypeOrmModule.forFeature([DailyDelivery,DeliveryItem,Product,Customer,AssignCustomer,Area,Zone]),
+  imports:[HttpModule,TypeOrmModule.forFeature([DailyDelivery,DeliveryItem,Product,Customer,AssignCustomer,Area,Zone,Route]),
 
 ],
   controllers: [RiderController, ],
