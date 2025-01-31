@@ -13,6 +13,7 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Invoice } from './invoice.entity';
 
 @Entity()
 export class Customer {
@@ -69,6 +70,9 @@ export class Customer {
   @OneToOne(()=>Route,(route)=>route.customer)
   @JoinColumn({name : 'routeId'})
   route:Route;
+
+  @OneToMany(()=>Invoice,(invoice)=>invoice.customer)
+  invoices:Invoice[];
 
   @Column({ type: 'timestamp', default:()=>'CURRENT_TIMESTAMP', nullable:true})
   createdAt: Date;
