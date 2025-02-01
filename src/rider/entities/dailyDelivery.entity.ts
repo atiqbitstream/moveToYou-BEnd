@@ -1,6 +1,7 @@
 import { Customer } from './../../customer/entities/customer.entity';
-import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { DeliveryItem } from './deliveryItem.entity';
+import { Receipt } from 'src/customer/entities/receipt.entity';
 
 @Entity()
 export class DailyDelivery
@@ -29,6 +30,9 @@ export class DailyDelivery
 
     @OneToMany(()=>DeliveryItem,(deliveryItem)=>deliveryItem.dailyDelivery,{cascade:true})
     deliveryItems:DeliveryItem[];
+
+    @OneToOne(()=>Receipt,(receipt)=>receipt.dailyDelivery)
+    receipt:Receipt;
 
     @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
