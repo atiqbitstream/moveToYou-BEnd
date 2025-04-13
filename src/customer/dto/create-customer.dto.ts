@@ -6,7 +6,7 @@ export class CreateCustomerDto {
   address: string;
   sector: string;
   street: string;
-  googlePin: string;
+  googlePin: {latitude:number, longitude:number};
   homePicture: string;
   organization: string;
   organizationId:number

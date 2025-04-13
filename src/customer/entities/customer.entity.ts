@@ -38,8 +38,8 @@ export class Customer {
   @Column()
   street: string;
 
-  @Column()
-  googlePin: string;
+  @Column({type:'json', nullable:true})
+  googlePin: {latitude:number,longitude:number};
 
   @Column()
   homePicture: string;
