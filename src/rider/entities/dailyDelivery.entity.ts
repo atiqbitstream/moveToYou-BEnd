@@ -1,5 +1,5 @@
 import { Customer } from './../../customer/entities/customer.entity';
-import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { DeliveryItem } from './deliveryItem.entity';
 import { Receipt } from 'src/customer/entities/receipt.entity';
 
@@ -28,16 +28,18 @@ export class DailyDelivery
     @Column()
     riderId:number;
 
-    @OneToMany(()=>DeliveryItem,(deliveryItem)=>deliveryItem.dailyDelivery,{cascade:true})
+    @OneToMany(()=>DeliveryItem,(deliveryItem)=>deliveryItem.dailyDelivery,{cascade:true,eager:true})
     deliveryItems:DeliveryItem[];
 
     @OneToOne(()=>Receipt,(receipt)=>receipt.dailyDelivery)
-    receipt:Receipt;
+    @JoinColumn({ name: "receiptId" })  
+    receipt: Receipt;
+    
 
     @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 
-  // Automatically updates the timestamp when the entity is updated
+  
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
 

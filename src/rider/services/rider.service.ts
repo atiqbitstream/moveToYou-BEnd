@@ -4,7 +4,7 @@ import { In, Repository } from 'typeorm';
 import { CreateDailyDeliveryDto } from '../dto/deliveryDTOs/create-delivery.dto';
 import { DailyDelivery } from '../entities/dailyDelivery.entity';
 import { UpdateDeliveryDto } from '../dto/deliveryDTOs/update-delivery.dto';
-import { CreateDeliveryItemDto } from '../dto/deliveryDTOs/delivery-item.dto';
+import { CreateDeliveryItemDto, DeliveryItemDto } from '../dto/deliveryDTOs/delivery-item.dto';
 import { DeliveryItem } from '../entities/deliveryItem.entity';
 import { Product } from 'src/product/entities/product.entity';
 
@@ -24,6 +24,7 @@ import { CreateProductDto } from '../dto/productDTOs/create-product.dto';
 import { UpdateProductDto } from '../dto/productDTOs/update-product.dto';
 import { UpdateRouteDTO } from '../dto/routeDTOs/update-route.dto';
 import { Route } from '../entities/route.entity';
+import { ReceiptService } from 'src/customer/services/receipt.service';
 
 
 
@@ -47,6 +48,8 @@ export class RiderService {
   private zoneRepository: Repository<Zone>,
 
   private httpService:HttpService,
+
+  private receiptService:ReceiptService,
 
   @Inject(REQUEST) private readonly request:Request,
 
@@ -82,11 +85,9 @@ export class RiderService {
       ...newDelivery,
       date:new Date(newDelivery.date)
     }
-       const dailyDelivery = this.dailyDeliveryRepository.create(deliveryData);
-
-       const savedDelivery = this.dailyDeliveryRepository.save(dailyDelivery);
-
-       return savedDelivery;
+    return this.dailyDeliveryRepository.save(
+      this.dailyDeliveryRepository.create(deliveryData)
+    );
 
   }
 
@@ -110,7 +111,10 @@ export class RiderService {
           address: true,
           sector: true,
           street: true,
-          googlePin:true,
+          googlePin:{
+            longitude:true,
+            latitude:true
+          },
           organization:true,
           status:true
           // Add other fields as needed
@@ -191,21 +195,29 @@ export class RiderService {
   //crud for delivery item entity
 
 
-  async createDeliveryItem(newDelivery:CreateDeliveryItemDto)
-  {
-    const deliveryItems = newDelivery.productId.map(productId=>{
-      const deliveryItemData={
-        ...newDelivery,
-        productId:productId,
-        date:newDelivery.date ? new Date(newDelivery.date) : new Date()
-      };
+  async createDeliveryItem(newDelivery: CreateDeliveryItemDto) {
+    // Ensure deliveryItems exist
+    if (!newDelivery.deliveryItems || newDelivery.deliveryItems.length === 0) {
+        throw new Error('deliveryItems array is missing in the request.');
+    }
 
-      return this.deliveryItemRepository.create(deliveryItemData)
-    })
+    const deliveryItems = newDelivery.deliveryItems.map(item => {
+        return this.deliveryItemRepository.create({
+            dailyDeliveryId: newDelivery.dailyDeliveryId, // Ensure dailyDeliveryId is included
+            productId: item.productId,
+            quantity: item.quantity, 
+            price: item.price, 
+            date: item.date ? new Date(item.date) : new Date()
+        });
+    });
 
     const savedDeliveryItems = await this.deliveryItemRepository.save(deliveryItems);
+
+    await this.receiptService.createOrUpdateReceipt(newDelivery.dailyDeliveryId);
+
     return savedDeliveryItems;
-  }
+}
+
 
   getDelieveryItem(dailyDeliveryId:number)
   {
@@ -220,9 +232,14 @@ export class RiderService {
   {
     await this.deliveryItemRepository.update(id,updateDeliveryitem);
 
-    return this.deliveryItemRepository.findOneBy({
-      id
-    })
+    const updatedItem = await this.deliveryItemRepository.findOneBy({id});
+
+    if(updatedItem)
+    {
+      await this.receiptService.createOrUpdateReceipt(updatedItem.dailyDeliveryId)
+    }
+
+    return updatedItem;
 
   }
 
@@ -233,7 +250,9 @@ export class RiderService {
 
     deliveryItem.isDeleted = !deliveryItem.isDeleted;
 
-    return await this.deliveryItemRepository.save(deliveryItem);
+     await this.deliveryItemRepository.save(deliveryItem);
+
+     await this.receiptService.createOrUpdateReceipt(deliveryItem.dailyDeliveryId);
   }
 
   //crud for product repository
@@ -297,7 +316,7 @@ export class RiderService {
   {
     const assignments = await this.assignCustomerRepo.find({
       where: { riderId: riderId, isDeleted: false },  // filter by riderId and ensure it's not deleted
-      relations: ['customer','customer.route'],
+      relations: ['customer','customer.route','customer.dailyDeliveries'],
       order:{
         customer:{
           route:{
