@@ -1,16 +1,27 @@
-import { isArray, IsDateString, } from "class-validator";
+import { IsArray, IsDateString, IsInt, IsNumber, IsOptional, IsNotEmpty } from 'class-validator';
 
-export class CreateDeliveryItemDto
-{
+export class DeliveryItemDto {
+    @IsInt()
+    productId: number;
+
+    @IsInt()
+    quantity: number;
+
+    @IsNumber()
+    price: number;
 
     @IsDateString()
     date: string;
+}
 
-    Qty:number;
+export class CreateDeliveryItemDto {
+    @IsDateString()
+    date: string;
 
-    price:number;
-    
-    productId:number[];
+    @IsInt()
+    dailyDeliveryId: number;
 
-    dailyDeliveryId:number;
+    @IsArray()
+    @IsNotEmpty()
+    deliveryItems: DeliveryItemDto[];
 }
