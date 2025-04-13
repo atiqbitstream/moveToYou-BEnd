@@ -18,7 +18,7 @@ export class DeliveryItem {
   date: Date;
 
   @Column()
-  Qty: number;
+  quantity: number;
 
   @Column()
   price: number;
