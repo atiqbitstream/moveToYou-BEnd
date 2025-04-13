@@ -52,7 +52,7 @@ export class RiderController {
   @Post('createDailyDelivery')
   createDailyDelivery(@Body() newDelivery: CreateDailyDeliveryDto, @Request() req) {
     console.log('Controller received newDelivery:', newDelivery);
-
+     
     if(!newDelivery.date)
     {
       newDelivery.date=new Date().toISOString();
@@ -97,7 +97,7 @@ export class RiderController {
 
   //crud for deliveryItem entity
   @Post('createDeliveryItem')
-  createDeliveryItem(@Body() newDeliveryItem: CreateDeliveryItemDto) {
+  addDeliveryItems(@Body() newDeliveryItem: CreateDeliveryItemDto) {
     if(!newDeliveryItem.date)
       {
         newDeliveryItem.date=new Date().toISOString();
