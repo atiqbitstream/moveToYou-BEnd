@@ -10,10 +10,13 @@ export class Product {
   @Column()
   name: string;
 
-  @OneToMany(()=>DeliveryItem,(deliveryItem)=>deliveryItem.product)
-   deliveryItems:DeliveryItem[];
+  @Column({default:0})
+  price:number;
 
-   @Column({default:false})
+  @OneToMany(()=>DeliveryItem,(deliveryItem)=>deliveryItem.product)
+  deliveryItems:DeliveryItem[];
+
+  @Column({default:false})
   isDeleted:boolean;
 
   @Column()
