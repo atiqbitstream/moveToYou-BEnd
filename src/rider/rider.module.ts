@@ -1,5 +1,6 @@
+import { CustomerModule } from 'src/customer/customer.module';
 import { Customer } from 'src/customer/entities/customer.entity';
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { RiderService } from './services/rider.service';
 import { RiderController } from './controllers/rider.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -14,11 +15,22 @@ import { TokenService } from 'src/shared/services/token.service';
 import { Route } from './entities/route.entity';
 
 @Module({
-  imports:[HttpModule,TypeOrmModule.forFeature([DailyDelivery,DeliveryItem,Product,Customer,AssignCustomer,Area,Zone,Route]),
-
-],
-  controllers: [RiderController, ],
-  providers: [RiderService,TokenService],
-  exports:[RiderService]
+  imports: [
+    HttpModule,
+    forwardRef(() => CustomerModule),  // Fix circular dependency
+    TypeOrmModule.forFeature([
+      DailyDelivery,
+      DeliveryItem,
+      Product,
+      Customer,
+      AssignCustomer,
+      Area,
+      Zone,
+      Route
+    ])
+  ],
+  controllers: [RiderController],
+  providers: [RiderService, TokenService],
+  exports: [RiderService]
 })
 export class RiderModule {}
