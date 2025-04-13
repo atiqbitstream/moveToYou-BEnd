@@ -17,7 +17,10 @@ export class FakerService {
             address: 'Sector A',
             sector: 'I-10',
             street: 'Street 1',
-            googlePin: 'https://maps.google.com/?q=I-10+Street+1',
+            googlePin: {
+              longitude:12.03,
+              latitude:11.03
+           },
             homePicture: 'https://example.com/home1.jpg',
             organization: 'emaanDairy',
             organizationId: 1,
@@ -31,7 +34,10 @@ export class FakerService {
             address: 'Sector B',
             sector: 'G-9',
             street: 'Street 2',
-            googlePin: 'https://maps.google.com/?q=G-9+Street+2',
+            googlePin: {
+              longitude:12.03,
+              latitude:11.03
+           },
             homePicture: 'https://example.com/home2.jpg',
             organization: 'emaanDairy',
             organizationId: 1,
@@ -45,7 +51,10 @@ export class FakerService {
             address: 'Sector C',
             sector: 'G-8',
             street: 'Street 3',
-            googlePin: 'https://maps.google.com/?q=G-8+Street+3',
+            googlePin: {
+              longitude:12.03,
+              latitude:11.03
+           },
             homePicture: 'https://example.com/home3.jpg',
             organization: 'emaanDairy',
             organizationId: 1,
@@ -62,7 +71,10 @@ export class FakerService {
             address: 'Sector D',
             sector: 'H-11',
             street: 'Street 4',
-            googlePin: 'https://maps.google.com/?q=H-11+Street+4',
+            googlePin: {
+              longitude:12.03,
+              latitude:11.03
+           },
             homePicture: 'https://example.com/home4.jpg',
             organization: 'newDairy',
             organizationId: 2,
@@ -76,7 +88,10 @@ export class FakerService {
             address: 'Sector E',
             sector: 'G-10',
             street: 'Street 5',
-            googlePin: 'https://maps.google.com/?q=G-10+Street+5',
+            googlePin: {
+              longitude:12.03,
+              latitude:11.03
+           },
             homePicture: 'https://example.com/home5.jpg',
             organization: 'newDairy',
             organizationId: 2,
@@ -90,7 +105,10 @@ export class FakerService {
             address: 'Sector F',
             sector: 'G-7',
             street: 'Street 6',
-            googlePin: 'https://maps.google.com/?q=G-7+Street+6',
+            googlePin: {
+              longitude:12.03,
+              latitude:11.03
+           },
             homePicture: 'https://example.com/home6.jpg',
             organization: 'newDairy',
             organizationId: 2,
@@ -107,7 +125,10 @@ export class FakerService {
             address: 'Sector G',
             sector: 'F-11',
             street: 'Street 7',
-            googlePin: 'https://maps.google.com/?q=F-11+Street+7',
+            googlePin: {
+              longitude:12.03,
+              latitude:11.03
+           },
             homePicture: 'https://example.com/home7.jpg',
             organization: 'freshDairy',
             organizationId: 3,
@@ -121,7 +142,10 @@ export class FakerService {
             address: 'Sector H',
             sector: 'H-8',
             street: 'Street 8',
-            googlePin: 'https://maps.google.com/?q=H-8+Street+8',
+            googlePin: {
+               longitude:12.03,
+               latitude:11.03
+            },
             homePicture: 'https://example.com/home8.jpg',
             organization: 'freshDairy',
             organizationId: 3,
@@ -135,7 +159,10 @@ export class FakerService {
             address: 'Sector I',
             sector: 'H-7',
             street: 'Street 9',
-            googlePin: 'https://maps.google.com/?q=H-7+Street+9',
+            googlePin: {
+              longitude:12.03,
+              latitude:11.03
+           },
             homePicture: 'https://example.com/home9.jpg',
             organization: 'freshDairy',
             organizationId: 3,
@@ -152,30 +179,39 @@ export class FakerService {
       }
 
       async createRandomProducts() {
-        const products = ['Peanut Butter', 'Milk', 'Yoghurt', 'Pure Honey', 'Olive Oil'];
+        const products = [
+          {name: 'peanut butter', price: 10},
+          {name: 'milk', price: 20},
+          {name: 'yoghurt', price:30},
+          {name: 'pure honey', price:40},
+          {name: 'oilve oil', price:50}
+        ];
     
         const emaanDairyProducts = await Promise.all(
-          products.map((productName) =>
+          products.map((product) =>
             this.riderService.createProduct({
-              name: productName,
+              name: product.name,
+              price:product.price,
               organizationId: 1, // EmaanDairy
             }),
           ),
         );
     
         const newDairyProducts = await Promise.all(
-          products.map((productName) =>
+          products.map((product) =>
             this.riderService.createProduct({
-              name: productName,
+              name: product.name,
+              price:product.price,
               organizationId: 2, // NewDairy
             }),
           ),
         );
     
         const freshDairyProducts = await Promise.all(
-          products.map((productName) =>
+          products.map((product) =>
             this.riderService.createProduct({
-              name: productName,
+              name: product.name,
+              price:product.price,
               organizationId: 3, // FreshDairy
             }),
           ),
